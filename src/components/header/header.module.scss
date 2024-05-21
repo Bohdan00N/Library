@@ -1,0 +1,57 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+  color: deepskyblue;
+  max-height: 60px;
+  background-color: rgba(73, 48, 72, 0.8);
+  backdrop-filter: blur(10px);
+  .logo {
+    font-weight: 700;
+    background-clip: text;
+    font-size: 25px;
+    background: url("../../images/backLogo.png") repeat-y;
+    background-size: 1500px;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: anim 110s linear infinite;
+    border-radius: 8px;
+    padding: 5px 8px;
+    box-shadow: 0 0 80px rgba(255, 255, 255, 0.5);
+  }
+  @keyframes anim {
+    0% {
+      background-position: 0% 50%;
+    }
+
+    100% {
+      background-position: 100% 50%;
+    }
+  }
+  @-webkit-keyframes anim {
+    0% {
+      background-position: 0% 50%;
+    }
+
+    100% {
+      background-position: 100% 50%;
+    }
+  }
+}
+.buttonLogout {
+  border: none;
+  color: darkslateblue;
+  background-color: deepskyblue;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.name {
+ color:orangered;
+  font-size: 28px;
+  font-weight: bold;
+  font-style: italic;
+  text-decoration:underline 1px dashed white;
+}

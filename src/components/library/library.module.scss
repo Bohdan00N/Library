@@ -1,0 +1,42 @@
+// .container{
+// display: flex;
+// flex-direction: row;
+// justify-content: space-between;
+// min-width: 600px;
+// }
+.namesList{
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 1fr;
+    grid-column-gap: 300px;
+}
+.list {
+list-style: none;
+// margin-left: -40px;
+// margin-right: 40px;
+// display: flex;
+
+// justify-content: left;
+}
+.allListCon {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 1fr;
+  grid-column-gap: 300px;
+  grid-row-gap: 15px;
+
+}
+
+.listCon1 {
+  grid-area: 1 / 1 / 2 / 2;
+}
+.listCon2 {
+  grid-area: 1 / 2 / 2 / 3;
+}
+.listCon3 {
+  grid-area: 1 / 3 / 2 / 4;
+}
+.listCon4 {
+  grid-area: 1 / 4 / 2 / 5;
+}

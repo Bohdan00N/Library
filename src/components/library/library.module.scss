@@ -7,7 +7,7 @@
 .namesList{
     list-style: none;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     grid-template-rows: 1fr;
     grid-column-gap: 300px;
 }
@@ -21,7 +21,7 @@ list-style: none;
 }
 .allListCon {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   grid-template-rows: 1fr;
   grid-column-gap: 300px;
   grid-row-gap: 15px;

@@ -1,3 +1,4 @@
+
 import { TypeOf, object, string } from "zod";
 
 const registerSchema = object({
@@ -26,9 +27,9 @@ export type RegisterRequest = TypeOf<typeof registerSchema>;
 export type RegisterResponse = {
   email: string | null;
   id: string | null;
-  error: string | null | undefined;
-  accessToken: string | null;
-  name: string;
+  // error: string | null | undefined;
+  // accessToken: string | null;
+  // name: string;
 };
 
 export type LoginRequest = TypeOf<typeof loginSchema>;
@@ -40,14 +41,31 @@ export type LoginResponse = {
   userData: {
     name: string;
     email: string;
-    goingToRead: string;
+    goingToRead: [
+      {
+        title: string;
+        author: string;
+        publishYear: number;
+        pagesTotal: number;
+        pagesFinished: number;
+        _id: string;
+        _v: number;
+      }
+    ];
     currentlyReading: string;
     finishedReading: string;
     id: string;
   };
   error: string | null | undefined;
 };
-
+export type refreshTokenRequest = {
+  sid: string;
+};
+export type refreshTokenResponse = {
+  newAccessToken: string;
+  newRefreshToken: string;
+  newSid: string;
+};
 export type userData = {
   name: string;
   email: string;
@@ -78,9 +96,9 @@ export type addBookResponse = {
   author: string | null;
   publishYear: number | null;
   pagesTotal: number | null;
-  pagesFinished?: number | null;
+  pagesFinished: number | null;
   _id: string | null;
-  __v?: number | null;
+  __v: number | null;
 };
 
 export type bookReviewRequest = {
@@ -97,9 +115,67 @@ export type bookReviewResponse = {
   rating: number;
   feedback: string;
   _id: string;
-  _v: number;
+  __v: number;
 };
-
+export type startPlanningRequest = {
+  startDate: Date;
+  endDate: Date;
+  books: [string];
+};
+export type startPlanningResponse = {
+  startDate: Date;
+  endDate: Date;
+  books: [
+    {
+      title: string;
+      author: string;
+      publishYear: number;
+      totalPages: number;
+      pagesFinished: number;
+      rating: number;
+      feedback: string;
+      _id: string;
+      __v: number;
+    }
+  ];
+  duration: number;
+  pagesPerDay: number;
+  stats: {
+    date: Date;
+    pagesCount: number;
+  };
+  _id: string;
+};
+export type addPlanningRequest = {
+ pages: number;
+};
+export type addDlanningResponse = {
+  book: {
+    title: string,
+    author: string,
+    publishYear: number,
+    totalPages: number,
+    pagesFinished: number,
+    _id: string,
+    __v: number
+  },
+  planning: {
+    startDate: Date,
+    endDate: Date,
+    books: [
+      {
+        _id: string,
+        duration: number,
+        pagesPerDay: number,
+        stats: {
+          date: Date,
+          pagesCount: number
+        }
+      }
+    ],
+    _id: string
+  }
+};
 export type prepareHeaders = (
   headers: Headers,
   api: {

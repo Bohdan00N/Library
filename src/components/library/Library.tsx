@@ -33,8 +33,8 @@ export const Library: React.FC = () => {
 
   return (
     <div>
-      <h2>Going to read</h2>
       <div className={css.container}>
+      <h2>Going to read</h2>
         <ul className={css.namesList}>
           <li>
             <p>Book title</p>
@@ -49,7 +49,6 @@ export const Library: React.FC = () => {
             <p>Pages</p>
           </li>
         </ul>
-
         <div className={css.allListCon}>
           {goingToReadData.map((book) => (
             <React.Fragment key={book._id}>
@@ -94,6 +93,47 @@ export const Library: React.FC = () => {
           ))}
         </div>
       </div>
+        <div className="">
+          <h2>Done</h2>
+          <ul className={css.namesList}>
+          <li>
+            <p>Book title</p>
+          </li>
+          <li>
+            <p>Author</p>
+          </li>
+          <li>
+            <p>Year of publish</p>
+          </li>
+          <li>
+            <p>Pages</p>
+          </li>
+          <li>
+            <p>Rating</p>
+          </li>
+        </ul>
+        </div>
+        <div className="">
+          <h2>Reading</h2>
+          <ul className={css.namesList}>
+          <li>
+            <p>Book title</p>
+          </li>
+          <li>
+            <p>Author</p>
+          </li>
+          <li>
+            <p>Year of publish</p>
+          </li>
+          <li>
+            <p>Pages</p>
+          </li>
+          <li>
+            <p>Rating</p>
+          </li>
+        </ul>
+        </div>
+
     </div>
   );
 };

@@ -4,12 +4,12 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "../../Pages/Home/HomePage";
 import LoginPage from "../../Pages/Login/LoginPage";
 import RegisterPage from "../../Pages/Register/RegisterPage";
+import { selectAuth } from "../../app/redux/features/authSlice";
 
 const AppRoutes: React.FC = () => {
-  const token = useAppSelector((state) => state.auth.token);
-  const isRequireUser = !!token;
+  const token = useAppSelector(selectAuth).accessToken;
 
-  if (isRequireUser) {
+  if (token) {
     return (
       <Routes>
         <Route index path="/:user/books" element={<HomePage />} />

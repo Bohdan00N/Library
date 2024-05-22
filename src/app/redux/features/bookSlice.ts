@@ -1,12 +1,13 @@
-// import { userData } from './../api/types';
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 import { addBookResponse } from "../api/types";
-// import { AuthState } from "./authSlice";
-// import { selectUserId } from "./selectors";
+import { produce } from 'immer';
 
+interface BooksState {
+  [userId: string]: addBookResponse[];
+}
 
-const initialState: addBookResponse[] = [];
+const initialState: BooksState = {};
 
 const bookSlice = createSlice({
   name: "book",
@@ -15,22 +16,36 @@ const bookSlice = createSlice({
     setBook: (
       state,
       action: PayloadAction<{
-        userId:  string;  
+        userId: string;
         book: addBookResponse;
       }>
     ) => {
-      const actualUserEmail =  action.payload.userId ;
-      if (actualUserEmail) {
-        localStorage.setItem(
-          `book_${action.payload.userId}`,
-          JSON.stringify(action.payload.book)
-        );
+      const { userId, book } = action.payload;
+      state = produce(state, draftState => {
+        if (draftState[userId]) {
+          draftState[userId] = [...draftState[userId], book];
+        } else {
+          draftState[userId] = [book];
+        }
+      });
+    },
+    loadBooks: (state, action: PayloadAction<string>) => {
+      const userId = action.payload;
+      const books = localStorage.getItem(`books_${userId}`);
+      if (books) {
+        state[userId] = JSON.parse(books);
+      } else {
+        state[userId] = [];
       }
-      console.log(action.payload.userId);
-      state.push(action.payload.book);
+    },
+    clearBooks: (state, action: PayloadAction<string>) => {
+      const userId = action.payload;
+      delete state[userId];
+      localStorage.removeItem(`books_${userId}`);
     },
   },
 });
-export const selectBook = (state: RootState) => state.book;
+export const selectBooksByUser = (state: RootState, userId: string) =>
+  state.book[userId] || [];
 export const { setBook } = bookSlice.actions;
 export default bookSlice.reducer;

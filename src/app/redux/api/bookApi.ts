@@ -27,7 +27,6 @@ export const bookApi = createApi({
           const { data } = await queryFulfilled;
           const bookId = data._id;
           console.log("Added book ID:", bookId);
-          // Здесь можно выполнить дополнительные действия с bookId, например, запросить книгу по ID или обновить состояние
         } catch (error) {
           console.error("Error adding book:", error);
         }
@@ -51,12 +50,11 @@ export const bookApi = createApi({
         };
       },
     }),
-    getBooks: builder.query<userData, void>({
-      query(data) {
+    getBooks: builder.query<userData, string>({
+      query() {
         return {
           url: "user/books",
           method: "GET",
-          body: data,
         };
       },
       providesTags: ["Book"],

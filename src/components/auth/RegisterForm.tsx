@@ -4,16 +4,16 @@ import { SubmitHandler } from "react-hook-form";
 import { useRegisterUserMutation } from "../../app/redux/api/authApi";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useAppDispatch } from "../../app/store";
+// import { useAppDispatch } from "../../app/store";
 import { RegisterRequest } from "../../app/redux/api/types";
-import { setUser } from "../../app/redux/features/authSlice";
+// import { setUser } from "../../app/redux/features/authSlice";
 import { CustomButton } from "../Button/buttons";
 
 const RegisterForm = () => {
   const [form] = Form.useForm();
   const [clientReady, setClientReady] = useState<boolean>(false);
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
   useEffect(() => {
     setClientReady(true);
@@ -53,17 +53,12 @@ const RegisterForm = () => {
   };
 
   useEffect(() => {
-    if (isRegisterSuccess) {
-      const name = registerData?.name;
-      const id = registerData!.id ?? "";
-      dispatch(
-        setUser({
-          name: name!,
-          id: id,
-        })
-      );
+    if (isRegisterSuccess && registerData ) {
+      // const name = registerData.email;
+      // const id = registerData!.id ?? "";
+      
       toast.success("User register successfully");
-      navigate(`/${name}/books`);
+      navigate("/auth/login");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [registerData]);

@@ -2,24 +2,21 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Form, Input, Row, Card } from "antd";
 import { useEffect, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
-import { useAppDispatch } from "../../app/store";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useLoginUserMutation } from "../../app/redux/api/authApi";
 import { LoginRequest } from "../../app/redux/api/types";
-import { setUser } from "../../app/redux/features/authSlice";
 import { CustomButton } from "../Button/buttons";
+import { useLoginHelper } from "./loginHelper";
 
 const LoginForm = () => {
   const [form] = Form.useForm();
-  
+
   const [clientReady, setClientReady] = useState<boolean>(false);
   useEffect(() => {
     setClientReady(true);
   }, [form]);
-  
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  
+
+  const { login } = useLoginHelper();
   const [
     loginUser,
     {
@@ -29,34 +26,20 @@ const LoginForm = () => {
       error: loginError,
     },
   ] = useLoginUserMutation();
-  
+
   const onFinish: SubmitHandler<LoginRequest> = async ({ email, password }) => {
     if (email && password) {
-      await loginUser({
-        email,
-        password,
-      });
+      await loginUser({ email, password });
     } else {
       console.log(loginError);
     }
   };
 
   useEffect(() => {
-    if (isLoginSuccess) {
-      const name = loginData?.userData?.name;
-      const token = loginData!.accessToken ?? "";
-      if (name && token) {
-        dispatch(
-          setUser({
-            name: name,
-            token: token,
-          })
-        );
-      }
-      navigate(`/${name}/books`);
+    if (isLoginSuccess && loginData) {
+      login(loginData);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoginSuccess]);
+  }, [isLoginSuccess, loginData, login]);
 
   return (
     <div style={{ marginTop: "12vh" }}>

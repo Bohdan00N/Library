@@ -1,4 +1,3 @@
-
 import { TypeOf, object, string } from "zod";
 
 const registerSchema = object({
@@ -27,36 +26,32 @@ export type RegisterRequest = TypeOf<typeof registerSchema>;
 export type RegisterResponse = {
   email: string | null;
   id: string | null;
-  // error: string | null | undefined;
-  // accessToken: string | null;
-  // name: string;
 };
 
 export type LoginRequest = TypeOf<typeof loginSchema>;
 
 export type LoginResponse = {
-  accessToken: string | null;
-  refreshToken: string | null;
-  sid: string | null;
+  accessToken: string;
+  refreshToken: string;
+  sid: string ;
   userData: {
-    name: string;
-    email: string;
+    name: string ;
+    email: string ;
     goingToRead: [
       {
-        title: string;
-        author: string;
-        publishYear: number;
-        pagesTotal: number;
-        pagesFinished: number;
-        _id: string;
-        _v: number;
+        title: string | null;
+        author: string | null;
+        publishYear: number | null;
+        pagesTotal: number | null;
+        pagesFinished: number | null;
+        _id: string | null;
+        _v: number | null;
       }
     ];
-    currentlyReading: string;
-    finishedReading: string;
-    id: string;
+    currentlyReading: [];
+    finishedReading: [];
+    id: string | null;
   };
-  error: string | null | undefined;
 };
 export type refreshTokenRequest = {
   sid: string;
@@ -96,9 +91,9 @@ export type addBookResponse = {
   author: string | null;
   publishYear: number | null;
   pagesTotal: number | null;
-  pagesFinished: number | null;
+  pagesFinished?: number | null;
   _id: string | null;
-  __v: number | null;
+  __v?: number | null;
 };
 
 export type bookReviewRequest = {
@@ -147,34 +142,34 @@ export type startPlanningResponse = {
   _id: string;
 };
 export type addPlanningRequest = {
- pages: number;
+  pages: number;
 };
-export type addDlanningResponse = {
+export type addPlanningResponse = {
   book: {
-    title: string,
-    author: string,
-    publishYear: number,
-    totalPages: number,
-    pagesFinished: number,
-    _id: string,
-    __v: number
-  },
+    title: string;
+    author: string;
+    publishYear: number;
+    totalPages: number;
+    pagesFinished: number;
+    _id: string;
+    __v: number;
+  };
   planning: {
-    startDate: Date,
-    endDate: Date,
+    startDate: Date;
+    endDate: Date;
     books: [
       {
-        _id: string,
-        duration: number,
-        pagesPerDay: number,
+        _id: string;
+        duration: number;
+        pagesPerDay: number;
         stats: {
-          date: Date,
-          pagesCount: number
-        }
+          date: Date;
+          pagesCount: number;
+        };
       }
-    ],
-    _id: string
-  }
+    ];
+    _id: string;
+  };
 };
 export type prepareHeaders = (
   headers: Headers,
@@ -186,16 +181,3 @@ export type prepareHeaders = (
     forced: boolean | undefined;
   }
 ) => Headers | void;
-// type RootState = {
-//   authApi: CombinedState<{
-//     registerUser: MutationDefinition<{
-//       name: string;
-//       email: string;
-//       password: string;
-//     }, BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError, {}, FetchBaseQueryMeta>, never, RegisterResponse, "authApi">;
-//     loginUser: MutationDefinition<...>;
-//   }, never, "authApi">;
-//   bookApi: CombinedState<...>;
-//   auth: AuthState;
-//   book: addBookResponse[];
-// } & PersistPartial;

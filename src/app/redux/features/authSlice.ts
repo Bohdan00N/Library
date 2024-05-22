@@ -1,52 +1,72 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
+import { LoginResponse } from "../api/types";
 
-export type AuthState = {
-  name: string | null;
-  token: string | null;
-  id: string | null;
-};
-const initialState: AuthState = {
-  name: null,
-  token: null,
-  id: null,
+const initialState: LoginResponse = {
+  accessToken: null,
+  refreshToken: null,
+  sid: null,
+  userData: {
+    name: null,
+    email: null,
+    goingToRead: [
+      {
+        title: null,
+        author: null,
+        publishYear: null,
+        pagesTotal: null,
+        pagesFinished: null,
+        _id: null,
+        _v: null,
+      },
+    ],
+    currentlyReading: [],
+    finishedReading: [],
+    id: null,
+  },
 };
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser: (
-      state,
-      action: PayloadAction<{ name: string; token: string; id: string }>
-    ) => {
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          name: action.payload.name,
-          token: action.payload.token,
-          id: action.payload.id,
-        })
-      );
-      state.name = action.payload.name;
-      state.token = action.payload.token;
-      state.id = action.payload.id;
+    setUser: (state, action: PayloadAction<LoginResponse>) => {
+      localStorage.setItem("user", JSON.stringify(action.payload));
+      state.accessToken = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
+      state.sid = action.payload.sid;
+      state.userData = action.payload.userData;
     },
     logout: () => {
       localStorage.clear();
-      
       return initialState;
     },
     loadUser: (state) => {
-      const user = localStorage.getItem('user');
+      const user = localStorage.getItem("user");
       if (user) {
         const parsedUser = JSON.parse(user);
-        state.name = parsedUser.name;
-        state.token = parsedUser.token;
-        state.id = parsedUser.id;
+        state.accessToken = parsedUser.accessToken;
+        state.refreshToken = parsedUser.refreshToken;
+        state.sid = parsedUser.sid;
+        state.userData = parsedUser.userData;
       }
+    },
+    clearUserData: (state) => {
+      localStorage.removeItem("user");
+      state.accessToken = "";
+      state.refreshToken = "";
+      state.sid = "";
+      state.userData = {
+        name: null,
+        email: null,
+        goingToRead: [{ title: null, author: null, publishYear: null, pagesTotal: null, pagesFinished: null, _id: null, _v: null }],
+        currentlyReading: [],
+        finishedReading: [],
+        id: null
+      };
     },
   },
 });
+
 export const selectAuth = (state: RootState) => state.auth;
 
 export const { setUser, logout, loadUser } = authSlice.actions;

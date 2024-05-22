@@ -5,11 +5,14 @@ import {
   useDeleteBookMutation,
   useGetBooksQuery,
 } from "../../app/redux/api/bookApi";
+import { useAppSelector } from "../../hooks/hooks";
+import { selectAuth } from "../../app/redux/features/authSlice";
 
 export const Library: React.FC = () => {
   const [deleteBook] = useDeleteBookMutation();
-  const { data: userData, isLoading } = useGetBooksQuery();
-
+  const email = useAppSelector(selectAuth).userData.email;
+  const { data: userData, isLoading } = useGetBooksQuery(email);
+  
   const handleDeleteBook = async (id: string) => {
     try {
       await deleteBook({ bookId: id }).unwrap();
@@ -18,9 +21,10 @@ export const Library: React.FC = () => {
       console.error("Failed to delete book:", err);
     }
   };
-
+  
+  
   if (isLoading) return <div>Loading...</div>;
-
+  
   if (!userData || !Array.isArray(userData.goingToRead)) {
     return (
       <div>
@@ -28,13 +32,51 @@ export const Library: React.FC = () => {
       </div>
     );
   }
+  const { goingToRead, currentlyReading, finishedReading } = userData;
 
-  const goingToReadData = userData.goingToRead;
 
   return (
     <div>
+      <div className="">
+        <h2>Done</h2>
+        <ul className={css.namesList}>
+          <li>
+            <p>Book title</p>
+          </li>
+          <li>
+            <p>Author</p>
+          </li>
+          <li>
+            <p>Year of publish</p>
+          </li>
+          <li>
+            <p>Pages</p>
+          </li>
+         
+        </ul>
+      </div>
+      <div className="">
+        <h2>Reading</h2>
+        <ul className={css.namesList}>
+          <li>
+            <p>Book title</p>
+          </li>
+          <li>
+            <p>Author</p>
+          </li>
+          <li>
+            <p>Year of publish</p>
+          </li>
+          <li>
+            <p>Pages</p>
+          </li>
+          <li>
+            <p>Rating</p>
+          </li>
+        </ul>
+      </div>
       <div className={css.container}>
-      <h2>Going to read</h2>
+        <h2>Going to read</h2>
         <ul className={css.namesList}>
           <li>
             <p>Book title</p>
@@ -50,7 +92,7 @@ export const Library: React.FC = () => {
           </li>
         </ul>
         <div className={css.allListCon}>
-          {goingToReadData.map((book) => (
+          {goingToRead.map((book) => (
             <React.Fragment key={book._id}>
               <div className="listCon1">
                 <ul className={css.list}>
@@ -93,47 +135,6 @@ export const Library: React.FC = () => {
           ))}
         </div>
       </div>
-        <div className="">
-          <h2>Done</h2>
-          <ul className={css.namesList}>
-          <li>
-            <p>Book title</p>
-          </li>
-          <li>
-            <p>Author</p>
-          </li>
-          <li>
-            <p>Year of publish</p>
-          </li>
-          <li>
-            <p>Pages</p>
-          </li>
-          <li>
-            <p>Rating</p>
-          </li>
-        </ul>
-        </div>
-        <div className="">
-          <h2>Reading</h2>
-          <ul className={css.namesList}>
-          <li>
-            <p>Book title</p>
-          </li>
-          <li>
-            <p>Author</p>
-          </li>
-          <li>
-            <p>Year of publish</p>
-          </li>
-          <li>
-            <p>Pages</p>
-          </li>
-          <li>
-            <p>Rating</p>
-          </li>
-        </ul>
-        </div>
-
     </div>
   );
 };

@@ -2,21 +2,19 @@ import { useEffect, useState } from "react";
 import { Button, Form, Input, InputNumber } from "antd";
 import css from "./addBook.module.scss";
 import { Library } from "../library/Library";
-import { RootState, useAppDispatch } from "../../app/store";
+import { useAppDispatch } from "../../app/store";
 import { useAddBookMutation } from "../../app/redux/api/bookApi";
-import { addBookRequest  } from "../../app/redux/api/types";
+import { addBookRequest } from "../../app/redux/api/types";
 import { SubmitHandler } from "react-hook-form";
 import { setBook } from "../../app/redux/features/bookSlice";
-
-import { useSelector } from "react-redux";
+import { selectAuth } from "../../app/redux/features/authSlice";
 import { useAppSelector } from "../../hooks/hooks";
-// import { useAppSelector } from "../../hooks/hooks";
 
 export const AddBook = () => {
   const [form] = Form.useForm();
   const [clientReady, setClientReady] = useState<boolean>(false);
-const token = useSelector((state: RootState) => state.auth.token);
-console.log('Token:', token);
+  const email = useAppSelector(selectAuth).userData.email;
+
   useEffect(() => {
     setClientReady(true);
   }, [form]);
@@ -25,60 +23,44 @@ console.log('Token:', token);
 
   const [
     addBook,
-    {
-      data: addBookData,
-      isLoading: addBookLoading,
-      isSuccess: addBookSuccess,
-      // error: addBookError,
-    },
+    { data: addBookData, isLoading: addBookLoading, isSuccess: addBookSuccess },
   ] = useAddBookMutation();
 
-  const onFinish: SubmitHandler<addBookRequest> = async ({
-    title,
-    author,
-    publishYear,
-    pagesTotal,
-  }) => {
-    if (title && author && publishYear && pagesTotal && clientReady) {
-      try {
-        await addBook({ title, author, publishYear, pagesTotal });
-        form.resetFields();
-      } catch (error) {
-        console.error("Ошибка при добавлении книги:", error);
-      }
-    } else {
+  const onFinish: SubmitHandler<addBookRequest> = async (values) => {
+    const { title, author, publishYear, pagesTotal } = values;
+    if (!title || !author || !publishYear || !pagesTotal || !clientReady) {
       console.error("Ошибка: Не все данные книги заполнены.");
+      return;
+    }
+
+    try {
+      await addBook({ title, author, publishYear, pagesTotal });
+      form.resetFields();
+    } catch (error) {
+      console.error("Ошибка при добавлении книги:", error);
     }
   };
-  const userId = useAppSelector((state: RootState) => state.auth.id);
-  // const userId = useAppSelector(selectUserId) as string
-  // console.log(userId);
 
   useEffect(() => {
-    if (addBookSuccess) {
-      const title = addBookData.title;
-      const author = addBookData.author;
-      const publishYear = addBookData.publishYear;
-      const pagesTotal = addBookData.pagesTotal;
-      const bookId = addBookData._id;
+    if (addBookSuccess && addBookData) {
+      const { title, author, publishYear, pagesTotal, _id } = addBookData;
       if (title && author && publishYear && pagesTotal) {
         dispatch(
           setBook({
-           userId: userId!,
+            userId: email,
             book: {
-              title: title,
-              author: author,
-              publishYear: publishYear,
-              pagesTotal: pagesTotal,
-              _id: bookId,
+              title,
+              author,
+              publishYear,
+              pagesTotal,
+              _id,
             },
           })
         );
         form.resetFields();
       }
     }
-  
-  }, [dispatch, addBookSuccess, addBookData, form, userId]);
+  }, [dispatch, addBookSuccess, addBookData, form, email]);
 
   return (
     <div className={css.addContainer}>

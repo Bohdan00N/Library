@@ -11,7 +11,7 @@ import { planningApi } from "./redux/api/planningApi";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth", "book"], // Добавьте сюда имена редьюсеров, которые вы хотите сохранить
+  whitelist: ["auth", "book"],
 };
 
 const persistedReducer = persistReducer(

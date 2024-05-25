@@ -7,6 +7,7 @@ import { store, persistor } from "./app/store";
 import { BrowserRouter as Router } from "react-router-dom";
 import { CookiesProvider } from "react-cookie";
 import { PersistGate } from "redux-persist/integration/react"; // Импорт PersistGate
+import ErrorBoundary from "./utils/ErrorBoundary";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -18,7 +19,9 @@ root.render(
         {/* Оборачиваем в PersistGate */}
         <Router>
           <CookiesProvider>
-            <App />
+            <ErrorBoundary>
+              <App />
+            </ErrorBoundary>
           </CookiesProvider>
         </Router>
       </PersistGate>

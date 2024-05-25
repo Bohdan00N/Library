@@ -12,7 +12,6 @@ type Props = {
   ghost?: boolean;
   disabled?: boolean;
   size?: "large" | "middle" | "small" | undefined;
- 
 };
 
 export const CustomButton = ({
@@ -46,7 +45,6 @@ export const CustomButton = ({
         onClick={onClick}
         ghost={ghost}
         size={size}
-        
       >
         {children}
       </Button>

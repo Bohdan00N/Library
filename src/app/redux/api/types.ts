@@ -31,12 +31,12 @@ export type RegisterResponse = {
 export type LoginRequest = TypeOf<typeof loginSchema>;
 
 export type LoginResponse = {
-  accessToken: string;
-  refreshToken: string;
-  sid: string ;
+  accessToken: string | null;
+  refreshToken: string | null;
+  sid: string | null;
   userData: {
-    name: string ;
-    email: string ;
+    name: string | null;
+    email: string | null;
     goingToRead: [
       {
         title: string | null;
@@ -75,8 +75,28 @@ export type userData = {
       _v: number;
     }
   ];
-  currentlyReading: string;
-  finishedReading: string;
+  currentlyReading: [
+    {
+      title: string;
+      author: string;
+      publishYear: number;
+      pagesTotal: number;
+      pagesFinished: number;
+      _id: string;
+      _v: number;
+    }
+  ];
+  finishedReading: [
+    {
+      title: string;
+      author: string;
+      publishYear: number;
+      pagesTotal: number;
+      pagesFinished: number;
+      _id: string;
+      _v: number;
+    }
+  ];
 };
 
 export type addBookRequest = {

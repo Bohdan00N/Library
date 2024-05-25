@@ -2,6 +2,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 import { LoginResponse } from "../api/types";
 
+
 const initialState: LoginResponse = {
   accessToken: null,
   refreshToken: null,
@@ -52,17 +53,8 @@ const authSlice = createSlice({
     },
     clearUserData: (state) => {
       localStorage.removeItem("user");
-      state.accessToken = "";
-      state.refreshToken = "";
-      state.sid = "";
-      state.userData = {
-        name: null,
-        email: null,
-        goingToRead: [{ title: null, author: null, publishYear: null, pagesTotal: null, pagesFinished: null, _id: null, _v: null }],
-        currentlyReading: [],
-        finishedReading: [],
-        id: null
-      };
+      state = initialState;
+      return state;
     },
   },
 });

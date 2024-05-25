@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Input, InputNumber } from "antd";
+import { Form, Input, InputNumber } from "antd";
 import css from "./addBook.module.scss";
 import { Library } from "../library/Library";
 import { useAppDispatch } from "../../app/store";
@@ -17,13 +17,13 @@ export const AddBook = () => {
 
   useEffect(() => {
     setClientReady(true);
-  }, [form]);
+  }, []);
 
   const dispatch = useAppDispatch();
 
   const [
     addBook,
-    { data: addBookData, isLoading: addBookLoading, isSuccess: addBookSuccess },
+    { data: addBookData, isSuccess: addBookSuccess },
   ] = useAddBookMutation();
 
   const onFinish: SubmitHandler<addBookRequest> = async (values) => {
@@ -47,7 +47,7 @@ export const AddBook = () => {
       if (title && author && publishYear && pagesTotal) {
         dispatch(
           setBook({
-            userId: email,
+            userId: email!,
             book: {
               title,
               author,
@@ -130,16 +130,7 @@ export const AddBook = () => {
           </Form.Item>
 
           <Form.Item shouldUpdate>
-            {() => (
-              <Button
-                type="primary"
-                htmlType="submit"
-                ghost
-                loading={addBookLoading}
-              >
-                Add
-              </Button>
-            )}
+            {() => <button className={css.btnAdd}>Add</button>}
           </Form.Item>
         </Form>
       </div>

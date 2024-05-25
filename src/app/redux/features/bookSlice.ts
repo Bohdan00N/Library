@@ -1,7 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 import { addBookResponse } from "../api/types";
-import { produce } from 'immer';
 
 interface BooksState {
   [userId: string]: addBookResponse[];
@@ -21,14 +20,11 @@ const bookSlice = createSlice({
       }>
     ) => {
       const { userId, book } = action.payload;
-      state = produce(state, draftState => {
-        if (draftState[userId]) {
-          draftState[userId] = [...draftState[userId], book];
-        } else {
-          draftState[userId] = [book];
-        }
-      });
+      if (state[userId]) {
+        state[userId].push(book);
+      }
     },
+
     loadBooks: (state, action: PayloadAction<string>) => {
       const userId = action.payload;
       const books = localStorage.getItem(`books_${userId}`);

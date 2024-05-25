@@ -11,8 +11,9 @@ import { selectAuth } from "../../app/redux/features/authSlice";
 export const Library: React.FC = () => {
   const [deleteBook] = useDeleteBookMutation();
   const email = useAppSelector(selectAuth).userData.email;
-  const { data: userData, isLoading } = useGetBooksQuery(email);
-  
+
+  const { data: userData, isLoading } = useGetBooksQuery(email!);
+
   const handleDeleteBook = async (id: string) => {
     try {
       await deleteBook({ bookId: id }).unwrap();
@@ -21,11 +22,10 @@ export const Library: React.FC = () => {
       console.error("Failed to delete book:", err);
     }
   };
-  
-  
+
   if (isLoading) return <div>Loading...</div>;
-  
-  if (!userData || !Array.isArray(userData.goingToRead)) {
+
+  if (!userData?.goingToRead) {
     return (
       <div>
         <EmptyLib />
@@ -34,10 +34,9 @@ export const Library: React.FC = () => {
   }
   const { goingToRead, currentlyReading, finishedReading } = userData;
 
-
   return (
     <div>
-      <div className="">
+      <div className={css.container}>
         <h2>Done</h2>
         <ul className={css.namesList}>
           <li>
@@ -52,10 +51,51 @@ export const Library: React.FC = () => {
           <li>
             <p>Pages</p>
           </li>
-         
-        </ul>
+        </ul><div className={css.allListCon}>
+          {finishedReading.map((book) => (
+            <React.Fragment key={book._id}>
+              <div className="listCon1">
+                <ul className={css.list}>
+                  <li>{book.title}</li>
+                </ul>
+              </div>
+              <div className="listCon2">
+                <ul className={css.list}>
+                  <li>{book.author}</li>
+                </ul>
+              </div>
+              <div className="listCon3">
+                <ul className={css.list}>
+                  <li>{book.publishYear}</li>
+                </ul>
+              </div>
+              <div className="listCon4">
+                <ul className={css.list}>
+                  <li>{book.pagesTotal}</li>
+                </ul>
+              </div>
+              <div className="listCon5">
+                <ul className={css.list}>
+                  <li>
+                    <button className={css.btnDelete}
+                      onClick={() => {
+                        if (book._id) {
+                          handleDeleteBook(book._id);
+                        } else {
+                          console.error("Book ID is null");
+                        }
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </React.Fragment>
+          ))}
+        </div>
       </div>
-      <div className="">
+      <div className={css.container}>
         <h2>Reading</h2>
         <ul className={css.namesList}>
           <li>
@@ -73,7 +113,49 @@ export const Library: React.FC = () => {
           <li>
             <p>Rating</p>
           </li>
-        </ul>
+        </ul><div className={css.allListCon}>
+          {currentlyReading.map((book) => (
+            <React.Fragment key={book._id}>
+              <div className="listCon1">
+                <ul className={css.list}>
+                  <li>{book.title}</li>
+                </ul>
+              </div>
+              <div className="listCon2">
+                <ul className={css.list}>
+                  <li>{book.author}</li>
+                </ul>
+              </div>
+              <div className="listCon3">
+                <ul className={css.list}>
+                  <li>{book.publishYear}</li>
+                </ul>
+              </div>
+              <div className="listCon4">
+                <ul className={css.list}>
+                  <li>{book.pagesTotal}</li>
+                </ul>
+              </div>
+              <div className="listCon5">
+                <ul className={css.list}>
+                  <li>
+                    <button className={css.btnDelete}
+                      onClick={() => {
+                        if (book._id) {
+                          handleDeleteBook(book._id);
+                        } else {
+                          console.error("Book ID is null");
+                        }
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </React.Fragment>
+          ))}
+        </div>
       </div>
       <div className={css.container}>
         <h2>Going to read</h2>
@@ -117,7 +199,7 @@ export const Library: React.FC = () => {
               <div className="listCon5">
                 <ul className={css.list}>
                   <li>
-                    <button
+                    <button className={css.btnDelete}
                       onClick={() => {
                         if (book._id) {
                           handleDeleteBook(book._id);

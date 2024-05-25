@@ -46,17 +46,18 @@ const LoginForm = () => {
       <Row align="middle" justify="center">
         <Card
           title="Welcome, log in to enter your library"
-          headStyle={{
-            textAlign: "center",
-            fontSize: "25px",
-            marginTop: "10px",
-            border: 0,
+          styles={{
+            header: {
+              textAlign: "center",
+              fontSize: "25px",
+              marginTop: "10px",
+              border: 0,
+            },
           }}
           style={{
-            background: "transparent",
+            background: "rgb(45, 114, 114)",
             border: "3px solid rgba(24, 199, 187,0.5)",
             borderRadius: "20px",
-            backdropFilter: "blur(15px)",
             width: "30rem",
           }}
         >
@@ -113,11 +114,7 @@ const LoginForm = () => {
                 maxLength={20}
               />
             </Form.Item>
-            <Form.Item>
-              <a className="login-form-forgot" href="/">
-                Forgot password
-              </a>
-            </Form.Item>
+            
             <div
               style={{
                 display: "flex",
@@ -147,7 +144,7 @@ const LoginForm = () => {
               </Form.Item>
               <Link
                 to="/auth/register"
-                style={{ fontSize: "15px", fontWeight: "500" }}
+                style={{ color: "lightblue",fontSize: "15px", fontWeight: "500" }}
               >
                 Register Here
               </Link>

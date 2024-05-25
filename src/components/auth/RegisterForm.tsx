@@ -4,16 +4,13 @@ import { SubmitHandler } from "react-hook-form";
 import { useRegisterUserMutation } from "../../app/redux/api/authApi";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-// import { useAppDispatch } from "../../app/store";
 import { RegisterRequest } from "../../app/redux/api/types";
-// import { setUser } from "../../app/redux/features/authSlice";
 import { CustomButton } from "../Button/buttons";
 
 const RegisterForm = () => {
   const [form] = Form.useForm();
   const [clientReady, setClientReady] = useState<boolean>(false);
   const navigate = useNavigate();
-  // const dispatch = useAppDispatch();
 
   useEffect(() => {
     setClientReady(true);
@@ -53,32 +50,29 @@ const RegisterForm = () => {
   };
 
   useEffect(() => {
-    if (isRegisterSuccess && registerData ) {
-      // const name = registerData.email;
-      // const id = registerData!.id ?? "";
-      
+    if (isRegisterSuccess && registerData) {
       toast.success("User register successfully");
       navigate("/auth/login");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [registerData]);
+  }, [isRegisterSuccess, navigate, registerData]);
 
   return (
     <div style={{ marginTop: "12vh" }}>
       <Row align="middle" justify="center">
         <Card
           title="Sign Up"
-          headStyle={{
-            textAlign: "center",
-            fontSize: "35px",
-            marginTop: "10px",
-            border: 0,
+          styles={{
+            header: {
+              textAlign: "center",
+              fontSize: "25px",
+              marginTop: "10px",
+              border: 0,
+            },
           }}
           style={{
-            background: "transparent",
+            background: "rgb(45, 114, 114)",
             border: "3px solid rgba(24, 199, 187,0.5)",
             borderRadius: "20px",
-            backdropFilter: "blur(15px)",
             width: "30rem",
             maxHeight: "37rem",
           }}
@@ -207,7 +201,7 @@ const RegisterForm = () => {
                 )}
               </Form.Item>
               <Link
-                style={{ fontSize: "15px", fontWeight: "500" }}
+                style={{ color: "lightblue", fontSize: "15px", fontWeight: "500" }}
                 to="/auth/login"
               >
                 Login Here

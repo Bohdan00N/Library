@@ -1,5 +1,4 @@
 import css from "./header.module.scss";
-import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../app/store";
 import { toast } from "react-toastify";
@@ -26,9 +25,9 @@ export const Header = () => {
     <div className={css.header}>
       <p className={css.logo}>LIBRARY</p>
       <div className={css.name}>{`${userName}`}</div>
-      <Button className={css.buttonLogout} onClick={handleLogout}>
+      <button className={css.buttonLogout} onClick={handleLogout}>
         Logout
-      </Button>
+      </button>
     </div>
   );
 };

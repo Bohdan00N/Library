@@ -7,6 +7,7 @@ import {
 } from "../../app/redux/api/bookApi";
 import { useAppSelector } from "../../hooks/hooks";
 import { selectAuth } from "../../app/redux/features/authSlice";
+import { Rate } from "antd";
 
 export const Library: React.FC = () => {
   const [deleteBook] = useDeleteBookMutation();
@@ -51,7 +52,11 @@ export const Library: React.FC = () => {
           <li>
             <p>Pages</p>
           </li>
-        </ul><div className={css.allListCon}>
+          <li>
+            <p>Rating</p>
+          </li>
+        </ul>
+        <div className={css.allListCon}>
           {finishedReading.map((book) => (
             <React.Fragment key={book._id}>
               <div className="listCon1">
@@ -74,10 +79,18 @@ export const Library: React.FC = () => {
                   <li>{book.pagesTotal}</li>
                 </ul>
               </div>
+              <div className="listCon3">
+                <ul className={css.list}>
+                  <li>
+                    <Rate defaultValue={1} />
+                  </li>
+                </ul>
+              </div>
               <div className="listCon5">
                 <ul className={css.list}>
                   <li>
-                    <button className={css.btnDelete}
+                    <button
+                      className={css.btnDelete}
                       onClick={() => {
                         if (book._id) {
                           handleDeleteBook(book._id);
@@ -110,10 +123,8 @@ export const Library: React.FC = () => {
           <li>
             <p>Pages</p>
           </li>
-          <li>
-            <p>Rating</p>
-          </li>
-        </ul><div className={css.allListCon}>
+        </ul>
+        <div className={css.allListCon}>
           {currentlyReading.map((book) => (
             <React.Fragment key={book._id}>
               <div className="listCon1">
@@ -139,7 +150,8 @@ export const Library: React.FC = () => {
               <div className="listCon5">
                 <ul className={css.list}>
                   <li>
-                    <button className={css.btnDelete}
+                    <button
+                      className={css.btnDelete}
                       onClick={() => {
                         if (book._id) {
                           handleDeleteBook(book._id);
@@ -199,7 +211,8 @@ export const Library: React.FC = () => {
               <div className="listCon5">
                 <ul className={css.list}>
                   <li>
-                    <button className={css.btnDelete}
+                    <button
+                      className={css.btnDelete}
                       onClick={() => {
                         if (book._id) {
                           handleDeleteBook(book._id);

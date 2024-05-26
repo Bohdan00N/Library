@@ -4,6 +4,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "../../Pages/Home/HomePage";
 import LoginPage from "../../Pages/Login/LoginPage";
 import RegisterPage from "../../Pages/Register/RegisterPage";
+import TrainingPage from "../../Pages/Training/TrainingPage";
 import { selectAuth } from "../../app/redux/features/authSlice";
 
 const AppRoutes: React.FC = () => {
@@ -13,6 +14,7 @@ const AppRoutes: React.FC = () => {
     return (
       <Routes>
         <Route index path="/:user/books" element={<HomePage />} />
+        <Route path="/training" element={<TrainingPage />} />
       </Routes>
     );
   } else {

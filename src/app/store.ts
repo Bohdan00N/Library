@@ -7,11 +7,12 @@ import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 import bookReducer from "./redux/features/bookSlice";
 import { planningApi } from "./redux/api/planningApi";
+import planningReducer from './redux/features/planningSlice'
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth", "book"],
+  whitelist: ["auth", "book", "planning"],
 };
 
 const persistedReducer = persistReducer(
@@ -22,6 +23,7 @@ const persistedReducer = persistReducer(
     [planningApi.reducerPath]: planningApi.reducer,
     auth: authReducer,
     book: bookReducer,
+    planning: planningReducer
   })
 );
 

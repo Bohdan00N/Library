@@ -10,6 +10,15 @@ export const Header = () => {
   const navigate = useNavigate();
 
   const userName = useAppSelector(selectAuth).userData.name;
+
+  const handleTraining = async () => {
+    try {
+      navigate("/training");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleLogout = async () => {
     try {
       dispatch(logout());
@@ -17,17 +26,32 @@ export const Header = () => {
       toast.success("Logout success");
     } catch (error) {
       // Обрабатываем возможные ошибки
-      console.error("Ошибка при выходе:", error);
+      console.error(error);
     }
   };
-
+  const handleLogo = async () => {
+    try {
+      navigate("/");
+    } catch (error) {
+      // Обрабатываем возможные ошибки
+      console.error(error);
+    }
+  };
   return (
     <div className={css.header}>
-      <p className={css.logo}>LIBRARY</p>
-      <div className={css.name}>{`${userName}`}</div>
-      <button className={css.buttonLogout} onClick={handleLogout}>
-        Logout
+      <button className={css.logo} onClick={handleLogo}>
+        LIBRARY
       </button>
+
+      <div className={css.name}>{`${userName}`}</div>
+      <div className="">
+        <button className={css.btnTrain} onClick={handleTraining}>
+          Training
+        </button>
+        <button className={css.buttonLogout} onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
     </div>
   );
 };

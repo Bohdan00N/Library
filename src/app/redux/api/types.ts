@@ -61,42 +61,21 @@ export type refreshTokenResponse = {
   newRefreshToken: string;
   newSid: string;
 };
+export interface Book {
+  title: string;
+  author: string;
+  publishYear: number;
+  pagesTotal: number;
+  pagesFinished: number;
+  _id: string;
+  _v: number;
+}
 export type userData = {
   name: string;
   email: string;
-  goingToRead: [
-    {
-      title: string;
-      author: string;
-      publishYear: number;
-      pagesTotal: number;
-      pagesFinished: number;
-      _id: string;
-      _v: number;
-    }
-  ];
-  currentlyReading: [
-    {
-      title: string;
-      author: string;
-      publishYear: number;
-      pagesTotal: number;
-      pagesFinished: number;
-      _id: string;
-      _v: number;
-    }
-  ];
-  finishedReading: [
-    {
-      title: string;
-      author: string;
-      publishYear: number;
-      pagesTotal: number;
-      pagesFinished: number;
-      _id: string;
-      _v: number;
-    }
-  ];
+  goingToRead: Book[];
+  currentlyReading: Book[];
+  finishedReading: Book[];
 };
 
 export type addBookRequest = {
@@ -111,7 +90,7 @@ export type addBookResponse = {
   author: string | null;
   publishYear: number | null;
   pagesTotal: number | null;
-  pagesFinished?: number | null;
+  pagesFinished: number | null;
   _id: string | null;
   __v?: number | null;
 };
@@ -133,33 +112,33 @@ export type bookReviewResponse = {
   __v: number;
 };
 export type startPlanningRequest = {
-  startDate: Date;
-  endDate: Date;
-  books: [string];
+  startDate: string;
+  endDate: string;
+  books: string[];
 };
 export type startPlanningResponse = {
-  startDate: Date;
-  endDate: Date;
+  startDate: Date | null;
+  endDate: Date | null;
   books: [
     {
-      title: string;
-      author: string;
-      publishYear: number;
-      totalPages: number;
-      pagesFinished: number;
-      rating: number;
-      feedback: string;
-      _id: string;
-      __v: number;
-    }
-  ];
-  duration: number;
-  pagesPerDay: number;
+      title: string | null;
+      author: string | null;
+      publishYear: number | null;
+      pagesTotal: number | null;
+      pagesFinished: number | null;
+      rating: number | null;
+      feedback: string | null;
+      _id: string | null;
+      __v: number | null;
+    }]
+  ;
+  duration: number | null;
+  pagesPerDay: number | null;
   stats: {
-    date: Date;
-    pagesCount: number;
+    date: Date | null;
+    pagesCount: number | null;
   };
-  _id: string;
+  _id: string | null;
 };
 export type addPlanningRequest = {
   pages: number;
@@ -170,7 +149,7 @@ export type addPlanningResponse = {
     author: string;
     publishYear: number;
     totalPages: number;
-    pagesFinished: number;
+    pagesFinished: number | null;
     _id: string;
     __v: number;
   };
@@ -191,6 +170,12 @@ export type addPlanningResponse = {
     _id: string;
   };
 };
+
+export type ChartData = {
+  plan: number;
+  fact: number;
+};
+export type addChartResult = { date: Date; pages: number };
 export type prepareHeaders = (
   headers: Headers,
   api: {

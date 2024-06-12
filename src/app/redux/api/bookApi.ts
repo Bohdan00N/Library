@@ -11,7 +11,7 @@ import {
 export const bookApi = createApi({
   reducerPath: "bookApi",
   baseQuery: customFetchApi,
-  tagTypes: ["Book"],
+  tagTypes: ["book"],
   endpoints: (builder) => ({
     addBook: builder.mutation<addBookResponse, addBookRequest>({
       query(data) {
@@ -21,7 +21,7 @@ export const bookApi = createApi({
           body: data,
         };
       },
-      invalidatesTags: ["Book"],
+      invalidatesTags: ["book"],
       async onQueryStarted(_, { queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
@@ -39,7 +39,7 @@ export const bookApi = createApi({
           method: "DELETE",
         };
       },
-      invalidatesTags: ["Book"],
+      invalidatesTags: ["book"],
     }),
     reviewBook: builder.mutation<bookReviewResponse, bookReviewRequest>({
       query(data) {
@@ -57,7 +57,7 @@ export const bookApi = createApi({
           method: "GET",
         };
       },
-      providesTags: ["Book"],
+      providesTags: ["book"],
     }),
   }),
 });

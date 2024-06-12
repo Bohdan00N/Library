@@ -1,17 +1,15 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import customFetchApi from "./customFetchApi";
 import {
-  addBookRequest,
-  addBookResponse,
+  addPlanningRequest,
+  addPlanningResponse,
   startPlanningRequest,
   startPlanningResponse,
 } from "./types";
 
-
 export const planningApi = createApi({
   reducerPath: "planningApi",
   baseQuery: customFetchApi,
-  tagTypes: ["plan"],
   endpoints: (builder) => ({
     startPlan: builder.mutation<startPlanningResponse, startPlanningRequest>({
       query(data) {
@@ -22,7 +20,7 @@ export const planningApi = createApi({
         };
       },
     }),
-    addRead: builder.mutation<addBookResponse, addBookRequest>({
+    addRead: builder.mutation<addPlanningResponse, addPlanningRequest>({
       query(data) {
         return {
           url: "/planning",
@@ -31,7 +29,7 @@ export const planningApi = createApi({
         };
       },
     }),
-    currentPlan: builder.mutation<void, startPlanningResponse>({
+    currentPlan: builder.mutation<startPlanningResponse, string>({
       query() {
         return {
           url: "/planning",
@@ -41,3 +39,9 @@ export const planningApi = createApi({
     }),
   }),
 });
+
+export const {
+  useStartPlanMutation,
+  useAddReadMutation,
+  useCurrentPlanMutation,
+} = planningApi;

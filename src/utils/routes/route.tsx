@@ -13,6 +13,7 @@ const AppRoutes: React.FC = () => {
   if (token) {
     return (
       <Routes>
+        <Route path="/" element={<Navigate to="/:user/books" />} />
         <Route index path="/:user/books" element={<HomePage />} />
         <Route path="/training" element={<TrainingPage />} />
       </Routes>

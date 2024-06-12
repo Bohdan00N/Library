@@ -20,10 +20,13 @@ const bookSlice = createSlice({
       }>
     ) => {
       const { userId, book } = action.payload;
+
       if (state[userId]) {
         state[userId].push(book);
+      
       }
     },
+    
 
     loadBooks: (state, action: PayloadAction<string>) => {
       const userId = action.payload;
@@ -41,7 +44,9 @@ const bookSlice = createSlice({
     },
   },
 });
+
+
 export const selectBooksByUser = (state: RootState, userId: string) =>
   state.book[userId] || [];
-export const { setBook } = bookSlice.actions;
+export const { setBook, loadBooks } = bookSlice.actions;
 export default bookSlice.reducer;

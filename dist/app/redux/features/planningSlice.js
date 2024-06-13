@@ -1,18 +1,14 @@
-"use strict";
-var _a;
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.selectIsTrainingStarted = exports.selectPages = exports.selectPlan = exports.setReadPages = exports.resetPlan = exports.setPlan = void 0;
-var toolkit_1 = require("@reduxjs/toolkit");
-var initialState = {
+import { createSlice } from "@reduxjs/toolkit";
+const initialState = {
     plans: null,
     isTrainingStarted: {},
     isPagesAdded: null,
 };
-var planningSlice = (0, toolkit_1.createSlice)({
+const planningSlice = createSlice({
     name: 'planning',
-    initialState: initialState,
+    initialState,
     reducers: {
-        setPlan: function (state, action) {
+        setPlan(state, action) {
             console.log('setPlan called with:', action.payload); // Отладочный вывод
             if (!state.plans) {
                 state.plans = {};
@@ -21,7 +17,7 @@ var planningSlice = (0, toolkit_1.createSlice)({
             state.isTrainingStarted[action.payload.userId] = true;
             console.log('State after setPlan:', state); // Отладочный вывод
         },
-        setReadPages: function (state, action) {
+        setReadPages(state, action) {
             console.log('setPages called with:', action.payload); // Отладочный вывод
             if (!state.isPagesAdded) {
                 state.isPagesAdded = {};
@@ -29,7 +25,7 @@ var planningSlice = (0, toolkit_1.createSlice)({
             state.isPagesAdded[action.payload.userId] = action.payload.plan;
             console.log('State after setPages:', state); // Отладочный вывод
         },
-        resetPlan: function (state, action) {
+        resetPlan(state, action) {
             console.log('resetPlan called with:', action.payload); // Отладочный вывод
             if (state.plans) {
                 delete state.plans[action.payload.userId];
@@ -39,26 +35,23 @@ var planningSlice = (0, toolkit_1.createSlice)({
         },
     },
 });
-exports.setPlan = (_a = planningSlice.actions, _a.setPlan), exports.resetPlan = _a.resetPlan, exports.setReadPages = _a.setReadPages;
-var selectPlan = function (state, userId) {
-    var plans = state.planning.plans;
+export const { setPlan, resetPlan, setReadPages } = planningSlice.actions;
+export const selectPlan = (state, userId) => {
+    const plans = state.planning.plans;
     console.log('selectPlan:', plans, userId); // Отладочный вывод
     return plans ? plans[userId] || null : null;
 };
-exports.selectPlan = selectPlan;
-var selectPages = function (state, userId) {
-    var pages = state.planning.isPagesAdded;
+export const selectPages = (state, userId) => {
+    const pages = state.planning.isPagesAdded;
     console.log('selectPages:', pages, userId); // Отладочный вывод
     return pages ? pages[userId] || null : null;
 };
-exports.selectPages = selectPages;
-var selectIsTrainingStarted = function (state, userId) {
-    var isTrainingStarted = state.planning.isTrainingStarted;
+export const selectIsTrainingStarted = (state, userId) => {
+    const isTrainingStarted = state.planning.isTrainingStarted;
     console.log('selectIsTrainingStarted:', isTrainingStarted, userId); // Отладочный вывод
     return isTrainingStarted[userId] || false;
 };
-exports.selectIsTrainingStarted = selectIsTrainingStarted;
-exports.default = planningSlice.reducer;
+export default planningSlice.reducer;
 // startPlanningResponse = {
 //   startDate: null,
 //   endDate: null,

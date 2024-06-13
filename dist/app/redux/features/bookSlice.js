@@ -1,22 +1,18 @@
-"use strict";
-var _a;
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.loadBooks = exports.setBook = exports.selectBooksByUser = void 0;
-var toolkit_1 = require("@reduxjs/toolkit");
-var initialState = {};
-var bookSlice = (0, toolkit_1.createSlice)({
+import { createSlice } from "@reduxjs/toolkit";
+const initialState = {};
+const bookSlice = createSlice({
     name: "book",
-    initialState: initialState,
+    initialState,
     reducers: {
-        setBook: function (state, action) {
-            var _a = action.payload, userId = _a.userId, book = _a.book;
+        setBook: (state, action) => {
+            const { userId, book } = action.payload;
             if (state[userId]) {
                 state[userId].push(book);
             }
         },
-        loadBooks: function (state, action) {
-            var userId = action.payload;
-            var books = localStorage.getItem("books_".concat(userId));
+        loadBooks: (state, action) => {
+            const userId = action.payload;
+            const books = localStorage.getItem(`books_${userId}`);
             if (books) {
                 state[userId] = JSON.parse(books);
             }
@@ -24,16 +20,13 @@ var bookSlice = (0, toolkit_1.createSlice)({
                 state[userId] = [];
             }
         },
-        clearBooks: function (state, action) {
-            var userId = action.payload;
+        clearBooks: (state, action) => {
+            const userId = action.payload;
             delete state[userId];
-            localStorage.removeItem("books_".concat(userId));
+            localStorage.removeItem(`books_${userId}`);
         },
     },
 });
-var selectBooksByUser = function (state, userId) {
-    return state.book[userId] || [];
-};
-exports.selectBooksByUser = selectBooksByUser;
-exports.setBook = (_a = bookSlice.actions, _a.setBook), exports.loadBooks = _a.loadBooks;
-exports.default = bookSlice.reducer;
+export const selectBooksByUser = (state, userId) => state.book[userId] || [];
+export const { setBook, loadBooks } = bookSlice.actions;
+export default bookSlice.reducer;

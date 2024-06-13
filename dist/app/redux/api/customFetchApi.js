@@ -1,16 +1,13 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var query_1 = require("@reduxjs/toolkit/query");
-var baseUrl = "https://bookread-backend.goit.global";
-var customFetchApi = (0, query_1.fetchBaseQuery)({
-    baseUrl: baseUrl,
-    prepareHeaders: function (headers, _a) {
-        var getState = _a.getState;
-        var token = getState().auth.accessToken;
+import { fetchBaseQuery } from "@reduxjs/toolkit/query";
+const baseUrl = "https://bookread-backend.goit.global";
+const customFetchApi = fetchBaseQuery({
+    baseUrl,
+    prepareHeaders: (headers, { getState }) => {
+        const token = getState().auth.accessToken;
         if (token) {
-            headers.set("authorization", "Bearer ".concat(token));
+            headers.set("authorization", `Bearer ${token}`);
         }
         return headers;
     },
 });
-exports.default = customFetchApi;
+export default customFetchApi;

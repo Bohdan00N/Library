@@ -26,7 +26,7 @@ export const Library: React.FC = () => {
 
   if (isLoading) return <div>Loading...</div>;
 
-  if (!userData?.goingToRead) {
+  if (!userData?.currentlyReading || !userData?.finishedReading || !userData?.goingToRead) {
     return (
       <div>
         <EmptyLib />
@@ -59,48 +59,30 @@ export const Library: React.FC = () => {
         <div className={css.allListCon}>
           {finishedReading.map((book) => (
             <React.Fragment key={book._id}>
-              <div className="listCon1">
+              <div >
                 <ul className={css.list}>
                   <li>{book.title}</li>
                 </ul>
               </div>
-              <div className="listCon2">
+              <div >
                 <ul className={css.list}>
                   <li>{book.author}</li>
                 </ul>
               </div>
-              <div className="listCon3">
+              <div >
                 <ul className={css.list}>
                   <li>{book.publishYear}</li>
                 </ul>
               </div>
-              <div className="listCon4">
+              <div >
                 <ul className={css.list}>
                   <li>{book.pagesTotal}</li>
                 </ul>
               </div>
-              <div className="listCon3">
+              <div className={css.listCon3}>
                 <ul className={css.list}>
-                  <li>
+                  <li className={css.rate}>
                     <Rate defaultValue={1} />
-                  </li>
-                </ul>
-              </div>
-              <div className="listCon5">
-                <ul className={css.list}>
-                  <li>
-                    <button
-                      className={css.btnDelete}
-                      onClick={() => {
-                        if (book._id) {
-                          handleDeleteBook(book._id);
-                        } else {
-                          console.error("Book ID is null");
-                        }
-                      }}
-                    >
-                      Delete
-                    </button>
                   </li>
                 </ul>
               </div>
@@ -147,7 +129,6 @@ export const Library: React.FC = () => {
                   <li>{book.pagesTotal}</li>
                 </ul>
               </div>
-              
             </React.Fragment>
           ))}
         </div>

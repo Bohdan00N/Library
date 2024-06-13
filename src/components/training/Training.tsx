@@ -12,8 +12,10 @@ import {
 import dayjs from "dayjs";
 import {
   selectIsTrainingStarted,
+  selectPages,
   selectPlan,
   setPlan,
+  setReadPages,
 } from "../../app/redux/features/planningSlice";
 import { RootState, useAppDispatch } from "../../app/store";
 import {
@@ -36,6 +38,7 @@ import {
   ChartData,
 } from "chart.js";
 import { useSelector } from "react-redux";
+import Countdown from "antd/es/statistic/Countdown";
 
 ChartJS.register(
   CategoryScale,
@@ -50,7 +53,7 @@ ChartJS.register(
 export const Training = () => {
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
-  const [form2] = Form.useForm()
+  const [form2] = Form.useForm();
   const userId = useAppSelector(selectAuth).userData.id;
   const { data: userData } = useGetBooksQuery(userId!);
 
@@ -67,8 +70,11 @@ export const Training = () => {
       label: book.title,
     }));
   }
-  const isTrainingStarted = useSelector((state: RootState) => selectIsTrainingStarted(state, userId!));
+  const isTrainingStarted = useSelector((state: RootState) =>
+    selectIsTrainingStarted(state, userId!)
+  );
   console.log(isTrainingStarted);
+
   const [startPlan, { data: startPlanData, isSuccess: startPlanSuccess }] =
     useStartPlanMutation();
 
@@ -131,16 +137,14 @@ export const Training = () => {
     }
   }, [startPlanData, dispatch, form, startPlanSuccess, userId]);
 
-  const getPlan = useSelector((state: RootState) => selectPlan(state, userId!));
-  // const booksAmount = getPlan?.plan?.books.length;
-  // const duration = getPlan.plan?.duration;
-  // const pages = getPlan.plan?.pagesPerDay as number;
-  const booksAmount = getPlan?.books.length
-const duration = getPlan?.duration
-const pages = getPlan?.pagesPerDay as number;
-  const today = moment().format("YYYY-MM-DD");
-  const todayAsDayjs = dayjs(today);
-  console.log(duration,pages);
+  useEffect(() => {
+    if (addReadData && addReadSuccess) {
+      const { book, planning } = addReadData;
+      if (book && planning) {
+        dispatch(setReadPages({ userId: userId!, plan: { book, planning } }));
+      }
+    }
+  }, [addReadData, addReadSuccess, dispatch, userId]);
 
   const handleAddPages: SubmitHandler<addPlanningRequest> = async (values) => {
     await addRead({
@@ -148,31 +152,69 @@ const pages = getPlan?.pagesPerDay as number;
     });
     form.resetFields();
   };
+
+  const getPlan = useSelector((state: RootState) => selectPlan(state, userId!));
+  const getPages = useSelector((state: RootState) =>
+    selectPages(state, userId!)
+  );
+
   const getPast7Days = (): string[] => {
-    const past7Days: string[] = [];
+    const days: string[] = [];
     const today = moment();
 
-    for (let i = 6; i >= 0; i--) {
-      past7Days.push(today.clone().subtract(i, "days").format("YYYY-MM-DD"));
+    for (let i = -5; i <= 1; i++) {
+      days.push(today.clone().add(i, "days").format("YYYY-MM-DD"));
     }
 
-    return past7Days;
+    return days;
   };
+  const dateFinish: number | string = getPlan?.endDate?.toString() || "0";
+console.log(dateFinish);
+  if (typeof dateFinish === "number") {
+    dayjs(dateFinish).toDate(); // Convert number to Date using dayjs
+  } else {
+    dateFinish; // dateFinish is already a Date or undefined
+  }
 
-  
+  const pg = getPages?.planning.pagesPerDay ?? 0;
+  const booksAmount = getPlan?.books.length || 0;
+  const duration = getPlan?.duration || 0;
+  const today = dayjs();
+  const tomorrow = today.add(1, "day");
+  const finishPagesPerDay = getPages?.planning.stats ?? [];
+  interface RealPagesRead {
+    time: string;
+    pagesCount: number;
+  }
+
+  const groupDataByDate = (
+    data: RealPagesRead[]
+  ): { [date: string]: number } => {
+    return data.reduce<{ [date: string]: number }>((acc, item) => {
+      const date = moment(item.time).format("YYYY-MM-DD");
+      if (!acc[date]) {
+        acc[date] = 0;
+      }
+      acc[date] += item.pagesCount;
+      return acc;
+    }, {});
+  };
   const labels: string[] = getPast7Days();
+  const groupedData = groupDataByDate(finishPagesPerDay);
+  const factData = labels.map((date) => groupedData[date] || 0);
+
   const data: ChartData<"line"> = {
     labels: labels,
     datasets: [
       {
         label: "Plan",
-        data: [pages, pages, pages, pages, pages, pages, pages],
+        data: Array(labels.length).fill(pg),
         borderColor: "green",
         fill: false,
       },
       {
         label: "Fact",
-        data: [18, 39, 4, 50, 70, 33, 87],
+        data: factData,
         borderColor: "red",
         fill: false,
       },
@@ -208,51 +250,56 @@ const pages = getPlan?.pagesPerDay as number;
               initialValues={{ remember: true }}
             >
               <Space direction="vertical" size={12} className={css.formDate}>
-                <Form.Item
-                  label="Дата начала"
-                  name="startDate"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Пожалуйста, выберите дату начала!",
-                    },
-                  ]}
-                >
-                  <DatePicker
-                    minDate={todayAsDayjs}
-                    format="YYYY-MM-DD"
-                    onChange={(date) => {
-                      if (moment.isMoment(date) && date.isValid()) {
-                        form.setFieldsValue({
-                          startDate: date.format("YYYY-MM-DD"),
-                        });
-                      }
-                    }}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label="Дата окончания"
-                  name="endDate"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Пожалуйста, выберите дату окончания!",
-                    },
-                  ]}
-                >
-                  <DatePicker
-                    format="YYYY-MM-DD"
-                    onChange={(date) => {
-                      if (moment.isMoment(date) && date.isValid()) {
-                        form.setFieldsValue({
-                          endDate: date.format("YYYY-MM-DD"),
-                        });
-                      }
-                    }}
-                  />
-                </Form.Item>
-                <div className={css.boxBook}>
+                <div className={css.boxPick}>
+                  <div className={css.dates}>
+                    <Form.Item
+                      label="Start"
+                      name="startDate"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Пожалуйста, выберите дату начала!",
+                        },
+                      ]}
+                    >
+                      <DatePicker
+                        minDate={today}
+                        maxDate={today}
+                        format="YYYY-MM-DD"
+                        onChange={(date) => {
+                          if (moment.isMoment(date) && date.isValid()) {
+                            form.setFieldsValue({
+                              startDate: date.format("YYYY-MM-DD"),
+                            });
+                          }
+                        }}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      label="End"
+                      name="endDate"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Пожалуйста, выберите дату окончания!",
+                        },
+                      ]}
+                    >
+                      <DatePicker
+                        minDate={tomorrow}
+                        format="YYYY-MM-DD"
+                        onChange={(date) => {
+                          if (moment.isMoment(date) && date.isValid()) {
+                            form.setFieldsValue({
+                              endDate: date.format("YYYY-MM-DD"),
+                            });
+                          }
+                        }}
+                      />
+                    </Form.Item>
+                  </div>
                   <Form.Item
+                  label='Books'
                     name="books"
                     rules={[
                       {
@@ -268,6 +315,8 @@ const pages = getPlan?.pagesPerDay as number;
                       onChange={prepareBooks}
                     />
                   </Form.Item>
+                </div>
+                <div className={css.boxBook}>
                   <div className={css.tableF}>
                     <table className={css.table}>
                       <thead>
@@ -292,14 +341,15 @@ const pages = getPlan?.pagesPerDay as number;
                       ))}
                     </table>
                   </div>
-                  <Form.Item shouldUpdate>
-                    {() => <button className={css.btnAddBook}>Добавить</button>}
+                  <Form.Item shouldUpdate className={css.btnAddBookCont}>
+                    {() => <button className={css.btnAddBook}>Start Training</button>}
                   </Form.Item>
                 </div>
               </Space>
             </Form>
           ) : (
             <div className={css.currentlyReading}>
+              <Countdown title="Countdown" value={dateFinish} />
               <h3>Currently Reading</h3>
               <table className={css.table}>
                 <thead>
@@ -351,7 +401,6 @@ const pages = getPlan?.pagesPerDay as number;
             <h2>Results</h2>
             <div className={css.inputsCont}>
               <Form.Item
-                className={css.inputCont}
                 label="Date"
                 name="DateResult"
                 rules={[
@@ -361,7 +410,11 @@ const pages = getPlan?.pagesPerDay as number;
                   },
                 ]}
               >
-                <DatePicker minDate={todayAsDayjs} />
+                <DatePicker
+                  minDate={today}
+                  maxDate={today}
+                  placeholder={today.format("YYYY-MM-DD")}
+                />
               </Form.Item>
 
               <Form.Item
@@ -378,7 +431,7 @@ const pages = getPlan?.pagesPerDay as number;
               </Form.Item>
             </div>
             <Form.Item shouldUpdate>
-              {() => <button className={css.btnAddBook}>Add result</button>}
+              {() => <button className={css.btnAddRead}>Add result</button>}
             </Form.Item>
           </Form>
         </div>

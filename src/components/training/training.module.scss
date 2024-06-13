@@ -33,7 +33,11 @@
 }
 .stats {
   display: flex;
-  justify-content: space-between;
+  min-height: 100px;
+  justify-content: space-around;
+  background-color: lightgrey;
+  align-items: center;
+  border-radius: 3px;
 }
 .stat {
   display: flex;
@@ -50,26 +54,38 @@
   margin-top: 5px;
 }
 .boxBook {
+  display: inline-block;
+}
+.boxPick {
   display: flex;
-  justify-content: space-between;
+}
+.dates {
+  display: flex;
+  flex-direction: column;
+  padding-right: 100px;
 }
 .inputBook {
-  width: 715px;
+  max-width: 215px;
+}
+.btnAddBookCont {
+  display: flex;
+  justify-content: center;
 }
 .btnAddBook {
-  width: 181px;
-  margin-left: 40px;
+  width: 250px;
+  height: 70px;
+  background-color: rgb(27, 196, 112);
   border-radius: 3px;
-  color: rgb(49, 205, 31);
+  color: rgb(42, 29, 163);
   font-size: 20px;
   border: none;
   cursor: pointer;
   &:hover {
-    background-color: #ead6d9;
+    background-color: #169512;
   }
 
   &:active {
-    background-color: #decbce;
+    background-color: #169512;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 }
@@ -97,23 +113,44 @@
 
 .chartResCont {
   display: flex;
-  justify-content: space-around;
- 
+  justify-content: center;
 }
 .chartContainer {
   min-width: 928px;
   min-height: 340px;
+  margin-right: 100px;
 }
 .resultCont {
+  text-align: center;
   display: flex;
+  justify-content: center;
   width: 288px;
+  height: 300px;
   background-color: grey;
   border: 2px;
   border-radius: 5px;
 }
+.btnAddRead {
+  width: 150px;
+  height: 40px;
+  margin-left: 30px;
+  background-color: rgb(27, 196, 112);
+  border-radius: 3px;
+  color: rgb(42, 29, 163);
+  font-size: 20px;
+  border: none;
+  cursor: pointer;
+  &:hover {
+    background-color: #169512;
+  }
 
+  &:active {
+    background-color: #169512;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+}
 .inputCont {
   display: flex;
-  width: 180px;
+  width: 140px;
   border-collapse: collapse;
 }

@@ -43,7 +43,7 @@ export const AddBook = () => {
 
   useEffect(() => {
     if (addBookSuccess && addBookData) {
-      const { title, author, publishYear, pagesTotal, _id } = addBookData;
+      const { title, author, publishYear, pagesTotal,pagesFinished, _id } = addBookData;
       if (title && author && publishYear && pagesTotal) {
         dispatch(
           setBook({
@@ -53,6 +53,7 @@ export const AddBook = () => {
               author,
               publishYear,
               pagesTotal,
+              pagesFinished,
               _id,
             },
           })

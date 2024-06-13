@@ -130,12 +130,12 @@ export type startPlanningResponse = {
       feedback: string | null;
       _id: string | null;
       __v: number | null;
-    }]
-  ;
+    }
+  ];
   duration: number | null;
   pagesPerDay: number | null;
   stats: {
-    date: Date | null;
+    time: string | null;
     pagesCount: number | null;
   };
   _id: string | null;
@@ -156,17 +156,14 @@ export type addPlanningResponse = {
   planning: {
     startDate: Date;
     endDate: Date;
-    books: [
-      {
-        _id: string;
-        duration: number;
-        pagesPerDay: number;
-        stats: {
-          date: Date;
-          pagesCount: number;
-        };
-      }
-    ];
+    books: string[];
+    duration: number;
+    pagesPerDay: number;
+    stats: [{
+      time: string;
+      pagesCount: number;
+    }];
+
     _id: string;
   };
 };

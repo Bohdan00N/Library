@@ -1,15 +1,17 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { startPlanningResponse } from "../api/types";
+import { addPlanningResponse, startPlanningResponse } from "../api/types";
 import { RootState } from "../../store";
 
 interface PlanningState {
   plans: { [userId: string]: startPlanningResponse } | null;
   isTrainingStarted: { [userId: string]: boolean };
+  isPagesAdded: { [userId: string]: addPlanningResponse } | null;
 }
 
 const initialState: PlanningState = {
   plans: null,
   isTrainingStarted: {},
+  isPagesAdded: null,
 };
 
 const planningSlice = createSlice({
@@ -25,6 +27,14 @@ const planningSlice = createSlice({
       state.isTrainingStarted[action.payload.userId] = true;
       console.log('State after setPlan:', state); // Отладочный вывод
     },
+    setReadPages(state, action: PayloadAction<{ userId: string; plan: addPlanningResponse }>) {
+      console.log('setPages called with:', action.payload); // Отладочный вывод
+      if (!state.isPagesAdded) {
+        state.isPagesAdded = {};
+      }
+      state.isPagesAdded[action.payload.userId] = action.payload.plan;
+      console.log('State after setPages:', state); // Отладочный вывод
+    },
     resetPlan(state, action: PayloadAction<{ userId: string }>) {
       console.log('resetPlan called with:', action.payload); // Отладочный вывод
       if (state.plans) {
@@ -36,14 +46,18 @@ const planningSlice = createSlice({
   },
 });
 
-export const { setPlan, resetPlan } = planningSlice.actions;
+export const { setPlan, resetPlan, setReadPages } = planningSlice.actions;
 
 export const selectPlan = (state: RootState, userId: string) => {
   const plans = state.planning.plans;
   console.log('selectPlan:', plans, userId); // Отладочный вывод
   return plans ? plans[userId] || null : null;
 };
-
+export const selectPages = (state:RootState, userId: string)=>{
+  const pages = state.planning.isPagesAdded;
+  console.log('selectPages:', pages, userId); // Отладочный вывод
+  return pages ? pages[userId] || null : null;
+}
 export const selectIsTrainingStarted = (state: RootState, userId: string) => {
   const isTrainingStarted = state.planning.isTrainingStarted;
   console.log('selectIsTrainingStarted:', isTrainingStarted, userId); // Отладочный вывод

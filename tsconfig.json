@@ -5,17 +5,16 @@
     "target": "ES2020",
     "useDefineForClassFields": true,
     "lib": ["ES2021", "dom", "DOM.Iterable"],
-    "module": "ESNext",
+    "module": "esnext",
     "skipLibCheck": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "allowImportingTsExtensions": false, // Изменено на false или удалено
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": false, // Изменено на false
+    "noEmit": false,
     "jsx": "react-jsx",
     "strict": true,
     "noUnusedLocals": true,
@@ -24,7 +23,6 @@
     "noFallthroughCasesInSwitch": true,
     "allowJs": false
   },
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["src/**/*", "vite-env.d.ts"],
   "exclude": ["node_modules"],
-  "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -10,24 +10,25 @@ import { selectAuth } from "../../app/redux/features/authSlice";
 const AppRoutes: React.FC = () => {
   const token = useAppSelector(selectAuth).accessToken;
 
-  if (token) {
-    return (
-      <Routes>
-        <Route path="/" element={<Navigate to="/:user/books" />} />
-        <Route index path="/:user/books" element={<HomePage />} />
-        <Route path="/training" element={<TrainingPage />} />
-      </Routes>
-    );
-  } else {
-    return (
-      <Routes>
-        <Route index element={<Navigate to="/auth/login" />} />
-        <Route path="/auth/login" element={<LoginPage />} />
-        <Route path="/auth/register" element={<RegisterPage />} />
-        <Route path="*" element={<Navigate to="/auth/login" />} />
-      </Routes>
-    );
-  }
+  return (
+    <Routes>
+      {token ? (
+        <>
+          <Route path="/" element={<Navigate to="/:user/books" />} />
+          <Route path="/:user/books" element={<HomePage />} />
+          <Route path="/training" element={<TrainingPage />} />
+          {/* Add other authenticated routes here */}
+        </>
+      ) : (
+        <>
+          <Route path="/" element={<Navigate to="/auth/login" />} />
+          <Route path="/auth/login" element={<LoginPage />} />
+          <Route path="/auth/register" element={<RegisterPage />} />
+          <Route path="*" element={<Navigate to="/auth/login" />} />
+        </>
+      )}
+    </Routes>
+  );
 };
 
 export default AppRoutes;

@@ -9,7 +9,7 @@ export default defineConfig({
   base:`/${repoName}/`,
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src')
+      '@': path.resolve(__dirname, './src/main.tsx')
     }
   },
   server: {

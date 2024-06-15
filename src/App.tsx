@@ -10,6 +10,7 @@ const App: React.FC = () => {
   useEffect(() => {
     dispatch(loadUser());
   }, [dispatch]);
+
   return (
     <div>
       <AppRoutes />

@@ -1,7 +1,7 @@
+import { refreshTokenResponse } from './../api/types';
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 import { LoginResponse } from "../api/types";
-
 
 const initialState: LoginResponse = {
   accessToken: null,
@@ -26,6 +26,7 @@ const initialState: LoginResponse = {
     id: null,
   },
 };
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -37,9 +38,12 @@ const authSlice = createSlice({
       state.sid = action.payload.sid;
       state.userData = action.payload.userData;
     },
-    logout: () => {
+    logout: (state) => {
       localStorage.clear();
-      return initialState;
+      state.accessToken = null;
+      state.refreshToken = null;
+      state.sid = null;
+      state.userData = initialState.userData;
     },
     loadUser: (state) => {
       const user = localStorage.getItem("user");
@@ -53,14 +57,26 @@ const authSlice = createSlice({
     },
     clearUserData: (state) => {
       localStorage.removeItem("user");
-      state = initialState;
-      return state;
+      state.accessToken = initialState.accessToken;
+      state.refreshToken = initialState.refreshToken;
+      state.sid = initialState.sid;
+      state.userData = initialState.userData;
+    },
+    updateTokens: (
+      state,
+      action: PayloadAction< refreshTokenResponse >
+    ) => {
+      state.accessToken = action.payload.newAccessToken;
+      state.refreshToken = action.payload.newRefreshToken;
+      state.sid = action.payload.newSid
+      localStorage.setItem("user", JSON.stringify(state));
     },
   },
 });
 
 export const selectAuth = (state: RootState) => state.auth;
 
-export const { setUser, logout, loadUser } = authSlice.actions;
+export const { setUser, logout, loadUser, clearUserData, updateTokens } =
+  authSlice.actions;
 
 export default authSlice.reducer;

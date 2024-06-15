@@ -1,5 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import customFetchApi from "./customFetchApi";
+import baseQueryWithReauth from "./customFetchApi";
 import {
   addBookResponse,
   addBookRequest,
@@ -10,7 +10,7 @@ import {
 
 export const bookApi = createApi({
   reducerPath: "bookApi",
-  baseQuery: customFetchApi,
+  baseQuery: baseQueryWithReauth,
   tagTypes: ["book"],
   endpoints: (builder) => ({
     addBook: builder.mutation<addBookResponse, addBookRequest>({

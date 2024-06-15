@@ -1,11 +1,11 @@
 import { createApi, retry } from "@reduxjs/toolkit/query/react";
-import { LoginRequest, RegisterRequest, RegisterResponse } from "./types";
-import customFetchApi from "./customFetchApi";
+import { LoginRequest, RegisterRequest, RegisterResponse, refreshTokenRequest, refreshTokenResponse } from "./types";
+import baseQueryWithReauth from "./customFetchApi";
 import { LoginResponse } from "../api/types";
 
 export const authApi = createApi({
   reducerPath: "authApi",
-  baseQuery: customFetchApi,
+  baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
     registerUser: builder.mutation<RegisterResponse, RegisterRequest>({
       query(data) {
@@ -30,7 +30,16 @@ export const authApi = createApi({
         },
       },
     }),
+    refreshToken: builder.mutation<refreshTokenResponse, refreshTokenRequest>({
+      query(data) {
+        return {
+          url: "/auth/refresh",
+          method: "POST",
+          body: data,
+        };
+      },
+    }),
   }),
 });
 
-export const { useRegisterUserMutation, useLoginUserMutation } = authApi;
+export const { useRegisterUserMutation, useLoginUserMutation, useRefreshTokenMutation } = authApi;

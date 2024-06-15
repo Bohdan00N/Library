@@ -55,7 +55,7 @@ export const Training = () => {
   const [form] = Form.useForm();
   const [form2] = Form.useForm();
   const userId = useAppSelector(selectAuth).userData.id;
-  const { data: userData } = useGetBooksQuery(userId!);
+  const { data: userData, isLoading } = useGetBooksQuery(userId!);
 
   let options: { value: string; label: string }[] = [];
 
@@ -64,7 +64,6 @@ export const Training = () => {
   if (userData && userData.goingToRead) {
     const { goingToRead, currentlyReading: reading } = userData;
     currentlyReading = reading;
-    console.log(currentlyReading);
     options = goingToRead.map((book) => ({
       value: book._id,
       label: book.title,
@@ -73,7 +72,6 @@ export const Training = () => {
   const isTrainingStarted = useSelector((state: RootState) =>
     selectIsTrainingStarted(state, userId!)
   );
-  console.log(isTrainingStarted);
 
   const [startPlan, { data: startPlanData, isSuccess: startPlanSuccess }] =
     useStartPlanMutation();
@@ -91,7 +89,6 @@ export const Training = () => {
     }
   };
   const bookIds = selectedBooks.map((book) => book._id);
-  console.log(bookIds);
 
   const handleAddBtn: SubmitHandler<startPlanningRequest> = async (values) => {
     try {
@@ -169,7 +166,6 @@ export const Training = () => {
     return days;
   };
   const dateFinish: number | string = getPlan?.endDate?.toString() || "0";
-console.log(dateFinish);
   if (typeof dateFinish === "number") {
     dayjs(dateFinish).toDate(); // Convert number to Date using dayjs
   } else {
@@ -237,7 +233,9 @@ console.log(dateFinish);
       },
     },
   };
-
+  if (isLoading) {
+    return <div className={css.loading}>Loading...</div>;
+  }
   return (
     <>
       <div className={css.trpl}>

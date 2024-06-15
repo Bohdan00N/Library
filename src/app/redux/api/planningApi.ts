@@ -1,5 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import customFetchApi from "./customFetchApi";
+import baseQueryWithReauth from "./customFetchApi";
 import {
   addPlanningRequest,
   addPlanningResponse,
@@ -9,7 +9,7 @@ import {
 
 export const planningApi = createApi({
   reducerPath: "planningApi",
-  baseQuery: customFetchApi,
+  baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
     startPlan: builder.mutation<startPlanningResponse, startPlanningRequest>({
       query(data) {

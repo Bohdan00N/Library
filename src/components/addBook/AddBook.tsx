@@ -13,7 +13,7 @@ import { useAppSelector } from "../../hooks/hooks";
 export const AddBook = () => {
   const [form] = Form.useForm();
   const [clientReady, setClientReady] = useState<boolean>(false);
-  const email = useAppSelector(selectAuth).userData.email;
+  const user = useAppSelector(selectAuth).userData.id;
 
   useEffect(() => {
     setClientReady(true);
@@ -43,11 +43,11 @@ export const AddBook = () => {
 
   useEffect(() => {
     if (addBookSuccess && addBookData) {
-      const { title, author, publishYear, pagesTotal,pagesFinished, _id } = addBookData;
+      const { title, author, publishYear, pagesTotal,pagesFinished, _id, __v } = addBookData;
       if (title && author && publishYear && pagesTotal) {
         dispatch(
           setBook({
-            userId: email!,
+            userId: user!,
             book: {
               title,
               author,
@@ -55,13 +55,14 @@ export const AddBook = () => {
               pagesTotal,
               pagesFinished,
               _id,
+              __v
             },
           })
         );
         form.resetFields();
       }
     }
-  }, [dispatch, addBookSuccess, addBookData, form, email]);
+  }, [dispatch, addBookSuccess, addBookData, form, user]);
 
   return (
     <div className={css.addContainer}>

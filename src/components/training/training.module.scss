@@ -1,6 +1,4 @@
-.tableF {
-  min-height: 200px;
-}
+
 .trpl {
   display: flex;
   justify-content: center;
@@ -31,11 +29,26 @@
   color: tan;
   padding: 20px;
 }
-.loading{
+.loading {
   display: flex;
   margin-top: 200px;
   justify-content: center;
   font-size: 40px;
+}
+.currentlyReading{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.count {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: tan;
+  border-radius: 10%;
+  width: 360px;
+  height: 160px;
 }
 .stats {
   display: flex;
@@ -59,9 +72,7 @@
 .statLabel {
   margin-top: 5px;
 }
-.boxBook {
-  display: inline-block;
-}
+
 .boxPick {
   display: flex;
 }
@@ -71,7 +82,7 @@
   padding-right: 100px;
 }
 .inputBook {
-  max-width: 215px;
+  min-width: 170px;
 }
 .btnAddBookCont {
   display: flex;
@@ -98,25 +109,31 @@
 
 .tableF {
   width: 1000px;
-  height: 50px;
+  padding-bottom: 20px;
+  
 }
 .table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  
   th,
   td {
     padding: 8px;
-    text-align: left;
+    text-align: center;
     border-bottom: 1px solid #ddd;
+    background-color:tan;
   }
 
   th {
     background-color: #f2f2f2;
     font-weight: bold;
+    
   }
 }
-
+h3{text-align: center;
+font-size: 25px;
+color: blue;}
 .chartResCont {
   display: flex;
   justify-content: center;
@@ -135,6 +152,7 @@
   background-color: grey;
   border: 2px;
   border-radius: 5px;
+  margin-top: 30px;
 }
 .btnAddRead {
   width: 150px;
@@ -159,4 +177,16 @@
   display: flex;
   width: 140px;
   border-collapse: collapse;
+}
+.containerModal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btnClose {
+  background-color: lightgreen;
+  border-radius: 3px;
+  border: none;
+  height: 30px;
+  width: 70px;
 }

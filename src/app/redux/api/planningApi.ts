@@ -29,19 +29,7 @@ export const planningApi = createApi({
         };
       },
     }),
-    currentPlan: builder.mutation<startPlanningResponse, string>({
-      query() {
-        return {
-          url: "/planning",
-          method: "GET",
-        };
-      },
-    }),
   }),
 });
 
-export const {
-  useStartPlanMutation,
-  useAddReadMutation,
-  useCurrentPlanMutation,
-} = planningApi;
+export const { useStartPlanMutation, useAddReadMutation } = planningApi;

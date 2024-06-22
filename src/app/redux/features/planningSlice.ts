@@ -15,17 +15,24 @@ const initialState: PlanningState = {
 };
 
 const planningSlice = createSlice({
-  name: 'planning',
+  name: "planning",
   initialState,
   reducers: {
-    setPlan(state, action: PayloadAction<{ userId: string; plan: startPlanningResponse }>) {
+    setPlan(
+      state,
+      action: PayloadAction<{ userId: string; plan: startPlanningResponse }>
+    ) {
       if (!state.plans) {
         state.plans = {};
       }
       state.plans[action.payload.userId] = action.payload.plan;
       state.isTrainingStarted[action.payload.userId] = true;
+      state.isPagesAdded = null;
     },
-    setReadPages(state, action: PayloadAction<{ userId: string; plan: addPlanningResponse }>) {
+    setReadPages(
+      state,
+      action: PayloadAction<{ userId: string; plan: addPlanningResponse }>
+    ) {
       if (!state.isPagesAdded) {
         state.isPagesAdded = {};
       }
@@ -33,9 +40,11 @@ const planningSlice = createSlice({
     },
     resetPlan(state, action: PayloadAction<{ userId: string }>) {
       if (state.plans) {
-        delete state.plans[action.payload.userId];
+        state.isTrainingStarted[action.payload.userId] = false;
+        state.isPagesAdded = null;
+        state.plans = null;
       }
-      delete state.isTrainingStarted[action.payload.userId];
+      state.isTrainingStarted[action.payload.userId] = false;
     },
   },
 });
@@ -46,15 +55,13 @@ export const selectPlan = (state: RootState, userId: string) => {
   const plans = state.planning.plans;
   return plans ? plans[userId] || null : null;
 };
-export const selectPages = (state:RootState, userId: string)=>{
+export const selectPages = (state: RootState, userId: string) => {
   const pages = state.planning.isPagesAdded;
   return pages ? pages[userId] || null : null;
-}
+};
 export const selectIsTrainingStarted = (state: RootState, userId: string) => {
   const isTrainingStarted = state.planning.isTrainingStarted;
   return isTrainingStarted[userId] || false;
 };
 
 export default planningSlice.reducer;
-
-

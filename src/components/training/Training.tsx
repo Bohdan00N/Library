@@ -1,9 +1,9 @@
-import { Form, Cascader, DatePicker, Space, InputNumber } from "antd";
+import { Form, Cascader, DatePicker, Space, InputNumber, Modal } from "antd";
 import css from "./training.module.scss";
 import { useAppSelector } from "../../hooks/hooks";
 import { selectAuth } from "../../app/redux/features/authSlice";
 import { useGetBooksQuery } from "../../app/redux/api/bookApi";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Book,
   addPlanningRequest,
@@ -11,6 +11,7 @@ import {
 } from "../../app/redux/api/types";
 import dayjs from "dayjs";
 import {
+  resetPlan,
   selectIsTrainingStarted,
   selectPages,
   selectPlan,
@@ -39,6 +40,10 @@ import {
 } from "chart.js";
 import { useSelector } from "react-redux";
 import Countdown from "antd/es/statistic/Countdown";
+import {
+  removeBook,
+  selectBooksByUser,
+} from "../../app/redux/features/bookSlice";
 
 ChartJS.register(
   CategoryScale,
@@ -56,19 +61,26 @@ export const Training = () => {
   const [form2] = Form.useForm();
   const userId = useAppSelector(selectAuth).userData.id;
   const { data: userData, isLoading } = useGetBooksQuery(userId!);
+  const [modalVisible, setModalVisible] = useState(false);
+  // const { goingToRead } = userData ?? {};
+  const [pagesLeft, setPagesLeft] = useState<number>(0);
 
-  let options: { value: string; label: string }[] = [];
+  const options = useRef<{ value: string; label: string }[]>([]);
+  const bb = useSelector((state: RootState) =>
+    selectBooksByUser(state, userId!)
+  );
+  console.log(bb);
+  useEffect(() => {
+    if (bb) {
+      options.current = bb.map((book) => ({
+        value: book._id,
+        label: book.title,
+      }));
+    } else {
+      console.log("no data");
+    }
+  }, [bb]);
 
-  let currentlyReading: Book[] = [];
-  useEffect(() => {});
-  if (userData && userData.goingToRead) {
-    const { goingToRead, currentlyReading: reading } = userData;
-    currentlyReading = reading;
-    options = goingToRead.map((book) => ({
-      value: book._id,
-      label: book.title,
-    }));
-  }
   const isTrainingStarted = useSelector((state: RootState) =>
     selectIsTrainingStarted(state, userId!)
   );
@@ -78,16 +90,27 @@ export const Training = () => {
 
   const [addRead, { data: addReadData, isSuccess: addReadSuccess }] =
     useAddReadMutation();
-
   const [selectedBooks, setSelectedBooks] = useState<Book[]>([]);
+
+  useEffect(() => {
+    const storedBooks = localStorage.getItem("selectedBooks");
+    if (storedBooks) {
+      setSelectedBooks(JSON.parse(storedBooks));
+    }
+  }, []);
+
   const prepareBooks = (value: string[]) => {
     const selectedBook = userData?.goingToRead.find(
       (book) => book._id === value[0]
     );
+
     if (selectedBook) {
-      setSelectedBooks((prevBooks) => [...prevBooks, selectedBook]);
+      const newSelectedBooks = [selectedBook];
+      setSelectedBooks(newSelectedBooks);
+      localStorage.setItem("selectedBooks", JSON.stringify(newSelectedBooks));
     }
   };
+
   const bookIds = selectedBooks.map((book) => book._id);
 
   const handleAddBtn: SubmitHandler<startPlanningRequest> = async (values) => {
@@ -107,7 +130,7 @@ export const Training = () => {
       form.resetFields();
       setSelectedBooks([]);
     } catch (error) {
-      console.error("Ошибка при добавлении книги:", error);
+      console.error("Book isn't added:", error);
     }
   };
 
@@ -137,6 +160,7 @@ export const Training = () => {
   useEffect(() => {
     if (addReadData && addReadSuccess) {
       const { book, planning } = addReadData;
+
       if (book && planning) {
         dispatch(setReadPages({ userId: userId!, plan: { book, planning } }));
       }
@@ -144,16 +168,25 @@ export const Training = () => {
   }, [addReadData, addReadSuccess, dispatch, userId]);
 
   const handleAddPages: SubmitHandler<addPlanningRequest> = async (values) => {
-    await addRead({
-      pages: values.pages,
-    });
-    form.resetFields();
+    try {
+      await addRead({
+        pages: values.pages,
+      });
+      form2.resetFields();
+    } catch (error) {
+      console.log(error, "Wrong amount of pages");
+    }
   };
 
   const getPlan = useSelector((state: RootState) => selectPlan(state, userId!));
   const getPages = useSelector((state: RootState) =>
     selectPages(state, userId!)
   );
+  const [pF, setPF] = useState(getPlan?.books);
+
+  useEffect(() => {
+    setPF(getPlan?.books);
+  }, [getPlan?.books]);
 
   const getPast7Days = (): string[] => {
     const days: string[] = [];
@@ -167,14 +200,49 @@ export const Training = () => {
   };
   const dateFinish: number | string = getPlan?.endDate?.toString() || "0";
   if (typeof dateFinish === "number") {
-    dayjs(dateFinish).toDate(); // Convert number to Date using dayjs
-  } else {
-    dateFinish; // dateFinish is already a Date or undefined
+    dayjs(dateFinish).toDate();
   }
 
   const pg = getPages?.planning.pagesPerDay ?? 0;
   const booksAmount = getPlan?.books.length || 0;
   const duration = getPlan?.duration || 0;
+  const total = getPlan?.books[0].pagesTotal || 0;
+  const finished = getPages?.book.pagesFinished || 0;
+  console.log(total, finished);
+  useEffect(() => {
+    if (total && finished > 0) {
+      setPagesLeft(total - finished);
+      console.log(total, finished);
+    } else {
+      setPagesLeft(total);
+      console.log(total);
+    }
+  }, [finished, total]);
+
+  const [value, setValue] = React.useState<number | null>(null);
+
+  const handleChange = (value: number | null) => {
+    setValue(value);
+  };
+  useEffect(() => {
+    if (finished >= total && total !== 0) {
+      localStorage.setItem("ThisBookFinished", "true");
+      setModalVisible(true);
+    }
+  }, [finished, total]);
+
+  const handleModalClose = () => {
+    localStorage.setItem("ThisBookFinished", "false");
+    localStorage.removeItem("selectedBooks");
+    if (pF) {
+      dispatch(removeBook({ userId: userId!, bookId: pF[0]._id }));
+    }
+    dispatch(resetPlan({ userId: userId! }));
+    setSelectedBooks([]);
+    setModalVisible(false);
+    localStorage.removeItem("selectedBooks");
+  };
+
   const today = dayjs();
   const tomorrow = today.add(1, "day");
   const finishPagesPerDay = getPages?.planning.stats ?? [];
@@ -222,17 +290,18 @@ export const Training = () => {
       x: {
         title: {
           display: true,
-          text: "Дата",
+          text: "Date",
         },
       },
       y: {
         title: {
           display: true,
-          text: "Значение",
+          text: "Pages",
         },
       },
     },
   };
+
   if (isLoading) {
     return <div className={css.loading}>Loading...</div>;
   }
@@ -241,7 +310,7 @@ export const Training = () => {
       <div className={css.trpl}>
         <div className={css.trainCont}>
           <h2 className={css.textTrain}>My training</h2>
-          {!isTrainingStarted || currentlyReading.length === 0 ? (
+          {!isTrainingStarted || !pF ? (
             <Form
               form={form}
               onFinish={handleAddBtn}
@@ -297,19 +366,19 @@ export const Training = () => {
                     </Form.Item>
                   </div>
                   <Form.Item
-                  label='Books'
+                    label="Books"
                     name="books"
                     rules={[
                       {
                         required: true,
-                        message: "Пожалуйста, выберите книгу!",
+                        message: "Select book!",
                       },
                     ]}
                   >
                     <Cascader
                       className={css.inputBook}
-                      options={options}
-                      placeholder="Пожалуйста, выберите"
+                      options={options.current}
+                      placeholder="Select book"
                       onChange={prepareBooks}
                     />
                   </Form.Item>
@@ -319,10 +388,10 @@ export const Training = () => {
                     <table className={css.table}>
                       <thead>
                         <tr>
-                          <th>title</th>
-                          <th>author</th>
-                          <th>publishYear</th>
-                          <th>pagesTotal</th>
+                          <th>Title</th>
+                          <th>Author</th>
+                          <th>Year of publish</th>
+                          <th>Total pages</th>
                         </tr>
                       </thead>
                       {selectedBooks.map((book) => (
@@ -340,14 +409,21 @@ export const Training = () => {
                     </table>
                   </div>
                   <Form.Item shouldUpdate className={css.btnAddBookCont}>
-                    {() => <button className={css.btnAddBook}>Start Training</button>}
+                    {() => (
+                      <button className={css.btnAddBook}>Start Training</button>
+                    )}
                   </Form.Item>
                 </div>
               </Space>
             </Form>
           ) : (
             <div className={css.currentlyReading}>
-              <Countdown title="Countdown" value={dateFinish} />
+              <Countdown
+                className={css.count}
+                valueStyle={{ fontSize: '50px' }}
+                title="Time left"
+                value={dateFinish}
+              />
               <h3>Currently Reading</h3>
               <table className={css.table}>
                 <thead>
@@ -359,7 +435,7 @@ export const Training = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentlyReading.map((book) => (
+                  {pF.map((book) => (
                     <tr key={book._id}>
                       <td>{book.title}</td>
                       <td>{book.author}</td>
@@ -372,6 +448,29 @@ export const Training = () => {
             </div>
           )}
         </div>
+        {modalVisible && (
+          <Modal
+            open={modalVisible}
+            closable={false}
+            centered={true}
+            footer={[
+              <button
+                className={css.btnClose}
+                key="submit"
+                onClick={handleModalClose}
+              >
+                Close
+              </button>,
+            ]}
+          >
+            <div className={css.containerModal}>
+              <div className={css.text}>
+                <h2>Congratulations!</h2>
+                <p>Another book has been read</p>
+              </div>
+            </div>
+          </Modal>
+        )}
         <div className={css.goalBox}>
           <h2 className={css.goalText}>My goal</h2>
           <div className={css.stats}>
@@ -382,6 +481,10 @@ export const Training = () => {
             <div className={css.stat}>
               <div className={css.statValue}>{duration}</div>
               <div className={css.statLabel}>Days</div>
+            </div>
+            <div className={css.stat}>
+              <div className={css.statValue}>{pagesLeft}</div>
+              <div className={css.statLabel}>Pages Left</div>
             </div>
           </div>
         </div>
@@ -425,11 +528,19 @@ export const Training = () => {
                   },
                 ]}
               >
-                <InputNumber min={0} className={css.inputCont} />
+                <InputNumber
+                  min={0}
+                  max={500}
+                  value={value}
+                  onChange={handleChange}
+                  className={css.inputCont}
+                />
               </Form.Item>
             </div>
             <Form.Item shouldUpdate>
-              {() => <button className={css.btnAddRead}>Add result</button>}
+              {() => {
+                return <button className={css.btnAddRead}>Add result</button>;
+              }}
             </Form.Item>
           </Form>
         </div>

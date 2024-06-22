@@ -3,50 +3,69 @@ import { RootState } from "../../store";
 import { addBookResponse } from "../api/types";
 
 interface BooksState {
-  [userId: string]: addBookResponse[];
+  book: { [userId: string]: addBookResponse[] } | null;
 }
 
-const initialState: BooksState = {};
+const initialState: BooksState = {book:null};
 
 const bookSlice = createSlice({
   name: "book",
   initialState,
   reducers: {
-    setBook: (
+    setBook (
       state,
       action: PayloadAction<{
         userId: string;
-        book: addBookResponse;
+        book: addBookResponse
       }>
-    ) => {
-      const { userId, book } = action.payload;
-
-      if (state[userId]) {
-        state[userId].push(book);
-      
+    ) {
+      if (!state.book) {
+        state.book = {};
       }
+      const { userId, book } = action.payload;
+      if (!state.book[userId]) {
+        state.book[userId] = []; 
+      }
+      state.book[userId].push(book); 
+      // localStorage.removeItem(`books_${userId}`);
+      localStorage.setItem(`books_${userId}`, JSON.stringify(state.book[userId]));
     },
-    
-
-    loadBooks: (state, action: PayloadAction<string>) => {
+    loadBooks(state, action: PayloadAction<string>) {
       const userId = action.payload;
       const books = localStorage.getItem(`books_${userId}`);
       if (books) {
-        state[userId] = JSON.parse(books);
-      } else {
-        state[userId] = [];
+        try {
+          state.book = {
+            ...state.book,
+            [userId]: JSON.parse(books),
+          };
+        } catch (error) {
+          console.error("Error parsing books from localStorage:", error);
+        }
       }
     },
-    clearBooks: (state, action: PayloadAction<string>) => {
-      const userId = action.payload;
-      delete state[userId];
-      localStorage.removeItem(`books_${userId}`);
+    removeBook(
+      state,
+      action: PayloadAction<{
+        userId: string;
+        bookId: string; // Идентификатор книги, которую нужно удалить
+      }>
+    ) {
+      const { userId, bookId } = action.payload;
+      if (state.book && state.book[userId]) {
+        // Фильтруем массив книг пользователя, оставляя только те, которые не равны удаляемой
+        state.book[userId] = state.book[userId].filter(book => book._id !== bookId);
+
+        // Обновляем значение в localStorage
+        localStorage.setItem(`books_${userId}`, JSON.stringify(state.book[userId]));
+      }
     },
   },
 });
 
-
-export const selectBooksByUser = (state: RootState, userId: string) =>
-  state.book[userId] || [];
-export const { setBook, loadBooks } = bookSlice.actions;
+export const selectBooksByUser = (state: RootState, userId: string) => {
+  const book = state.book.book;
+  return book ? book[userId] || null : null;
+};
+export const { setBook, loadBooks, removeBook } = bookSlice.actions;
 export default bookSlice.reducer;

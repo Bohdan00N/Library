@@ -1,9 +1,20 @@
 .namesList {
   list-style: none;
   display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 1fr;
+  grid-column-gap: 300px;
+  grid-row-gap: 15px;
+  background-color: rgb(45, 114, 114);
+  margin-bottom: 0;
+}
+.namesList2 {
+  list-style: none;
+  display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: 1fr;
   grid-column-gap: 300px;
+  grid-row-gap: 15px;
   background-color: rgb(45, 114, 114);
   margin-bottom: 0;
 }
@@ -11,6 +22,14 @@
   list-style: none;
 }
 .allListCon {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 1fr;
+  grid-column-gap: 300px;
+  grid-row-gap: 15px;
+  background-color: rgb(162, 241, 241);
+}
+.allListCon2 {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: 1fr;

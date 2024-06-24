@@ -21,10 +21,8 @@ export const AddBook = () => {
 
   const dispatch = useAppDispatch();
 
-  const [
-    addBook,
-    { data: addBookData, isSuccess: addBookSuccess },
-  ] = useAddBookMutation();
+  const [addBook, { data: addBookData, isSuccess: addBookSuccess }] =
+    useAddBookMutation();
 
   const onFinish: SubmitHandler<addBookRequest> = async (values) => {
     const { title, author, publishYear, pagesTotal } = values;
@@ -43,7 +41,15 @@ export const AddBook = () => {
 
   useEffect(() => {
     if (addBookSuccess && addBookData) {
-      const { title, author, publishYear, pagesTotal,pagesFinished, _id, __v } = addBookData;
+      const {
+        title,
+        author,
+        publishYear,
+        pagesTotal,
+        pagesFinished,
+        _id,
+        __v,
+      } = addBookData;
       if (title && author && publishYear && pagesTotal) {
         dispatch(
           setBook({
@@ -55,7 +61,7 @@ export const AddBook = () => {
               pagesTotal,
               pagesFinished,
               _id,
-              __v
+              __v,
             },
           })
         );
@@ -114,7 +120,7 @@ export const AddBook = () => {
               },
             ]}
           >
-            <InputNumber />
+            <InputNumber max={2024} />
           </Form.Item>
 
           <Form.Item

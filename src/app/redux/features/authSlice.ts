@@ -1,5 +1,5 @@
 import { refreshTokenResponse } from './../api/types';
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction,  createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 import { LoginResponse } from "../api/types";
 
@@ -38,7 +38,7 @@ const authSlice = createSlice({
       state.sid = action.payload.sid;
       state.userData = action.payload.userData;
     },
-    logout: (state) => {
+    logOut: (state) => {
       localStorage.clear();
       state.accessToken = null;
       state.refreshToken = null;
@@ -76,7 +76,7 @@ const authSlice = createSlice({
 
 export const selectAuth = (state: RootState) => state.auth;
 
-export const { setUser, logout, loadUser, clearUserData, updateTokens } =
+export const { setUser, logOut, loadUser, clearUserData, updateTokens } =
   authSlice.actions;
 
 export default authSlice.reducer;

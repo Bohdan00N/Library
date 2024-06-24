@@ -6,17 +6,17 @@ interface BooksState {
   book: { [userId: string]: addBookResponse[] } | null;
 }
 
-const initialState: BooksState = {book:null};
+const initialState: BooksState = { book: null };
 
 const bookSlice = createSlice({
   name: "book",
   initialState,
   reducers: {
-    setBook (
+    setBook(
       state,
       action: PayloadAction<{
         userId: string;
-        book: addBookResponse
+        book: addBookResponse;
       }>
     ) {
       if (!state.book) {
@@ -24,11 +24,14 @@ const bookSlice = createSlice({
       }
       const { userId, book } = action.payload;
       if (!state.book[userId]) {
-        state.book[userId] = []; 
+        state.book[userId] = [];
       }
-      state.book[userId].push(book); 
-      // localStorage.removeItem(`books_${userId}`);
-      localStorage.setItem(`books_${userId}`, JSON.stringify(state.book[userId]));
+      state.book[userId].push(book);
+
+      localStorage.setItem(
+        `books_${userId}`,
+        JSON.stringify(state.book[userId])
+      );
     },
     loadBooks(state, action: PayloadAction<string>) {
       const userId = action.payload;
@@ -48,16 +51,19 @@ const bookSlice = createSlice({
       state,
       action: PayloadAction<{
         userId: string;
-        bookId: string; // Идентификатор книги, которую нужно удалить
+        bookId: string;
       }>
     ) {
       const { userId, bookId } = action.payload;
       if (state.book && state.book[userId]) {
-        // Фильтруем массив книг пользователя, оставляя только те, которые не равны удаляемой
-        state.book[userId] = state.book[userId].filter(book => book._id !== bookId);
+        state.book[userId] = state.book[userId].filter(
+          (book) => book._id !== bookId
+        );
 
-        // Обновляем значение в localStorage
-        localStorage.setItem(`books_${userId}`, JSON.stringify(state.book[userId]));
+        localStorage.setItem(
+          `books_${userId}`,
+          JSON.stringify(state.book[userId])
+        );
       }
     },
   },

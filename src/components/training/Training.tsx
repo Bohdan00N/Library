@@ -62,14 +62,12 @@ export const Training = () => {
   const userId = useAppSelector(selectAuth).userData.id;
   const { data: userData, isLoading } = useGetBooksQuery(userId!);
   const [modalVisible, setModalVisible] = useState(false);
-  // const { goingToRead } = userData ?? {};
   const [pagesLeft, setPagesLeft] = useState<number>(0);
 
   const options = useRef<{ value: string; label: string }[]>([]);
   const bb = useSelector((state: RootState) =>
     selectBooksByUser(state, userId!)
   );
-  console.log(bb);
   useEffect(() => {
     if (bb) {
       options.current = bb.map((book) => ({
@@ -174,7 +172,7 @@ export const Training = () => {
       });
       form2.resetFields();
     } catch (error) {
-      console.log(error, "Wrong amount of pages");
+      console.log("Wrong amount of pages:", error);
     }
   };
 
@@ -208,14 +206,11 @@ export const Training = () => {
   const duration = getPlan?.duration || 0;
   const total = getPlan?.books[0].pagesTotal || 0;
   const finished = getPages?.book.pagesFinished || 0;
-  console.log(total, finished);
   useEffect(() => {
     if (total && finished > 0) {
       setPagesLeft(total - finished);
-      console.log(total, finished);
     } else {
       setPagesLeft(total);
-      console.log(total);
     }
   }, [finished, total]);
 
@@ -420,7 +415,7 @@ export const Training = () => {
             <div className={css.currentlyReading}>
               <Countdown
                 className={css.count}
-                valueStyle={{ fontSize: '50px' }}
+                valueStyle={{ fontSize: "50px" }}
                 title="Time left"
                 value={dateFinish}
               />
@@ -530,7 +525,7 @@ export const Training = () => {
               >
                 <InputNumber
                   min={0}
-                  max={500}
+                  max={pagesLeft}
                   value={value}
                   onChange={handleChange}
                   className={css.inputCont}

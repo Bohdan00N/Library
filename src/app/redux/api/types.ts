@@ -161,30 +161,6 @@ export type addPlanningResponse = {
   book: Book;
   planning: Planning;
 }
-// export type addPlanningResponse = {
-//   book: {
-//     title: string;
-//     author: string;
-//     publishYear: number;
-//     totalPages: number;
-//     pagesFinished: number | null;
-//     _id: string;
-//     __v: number;
-//   };
-//   planning: {
-//     startDate: Date;
-//     endDate: Date;
-//     books: string[];
-//     duration: number;
-//     pagesPerDay: number;
-//     stats: [{
-//       time: string;
-//       pagesCount: number;
-//     }];
-
-//     _id: string;
-//   };
-// };
 
 export type ChartData = {
   plan: number;

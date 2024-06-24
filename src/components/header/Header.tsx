@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../app/store";
 import { toast } from "react-toastify";
 import { useAppSelector } from "../../hooks/hooks";
-import { logout, selectAuth } from "../../app/redux/features/authSlice";
+import { logOut,  selectAuth } from "../../app/redux/features/authSlice";
+import { useLogoutMutation } from "../../app/redux/api/authApi";
 
 export const Header = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
+  const [logout] = useLogoutMutation();
   const userName = useAppSelector(selectAuth).userData.name;
 
   const handleTraining = async () => {
@@ -21,11 +22,10 @@ export const Header = () => {
 
   const handleLogout = async () => {
     try {
-      dispatch(logout());
-      navigate("/auth/login");
+      await logout();
+      dispatch(logOut());
       toast.success("Logout success");
     } catch (error) {
-      // Обрабатываем возможные ошибки
       console.error(error);
     }
   };
@@ -33,7 +33,6 @@ export const Header = () => {
     try {
       navigate("/");
     } catch (error) {
-      // Обрабатываем возможные ошибки
       console.error(error);
     }
   };
@@ -42,7 +41,6 @@ export const Header = () => {
       <button className={css.logo} onClick={handleLogo}>
         LIBRARY
       </button>
-
       <div className={css.name}>{`${userName}`}</div>
       <div className="">
         <button className={css.btnTrain} onClick={handleTraining}>

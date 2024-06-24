@@ -43,6 +43,7 @@ const planningSlice = createSlice({
         state.isTrainingStarted[action.payload.userId] = false;
         state.isPagesAdded = null;
         state.plans = null;
+        // state.plans
       }
       state.isTrainingStarted[action.payload.userId] = false;
     },

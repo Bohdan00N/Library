@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 import { useRegisterUserMutation } from "../../app/redux/api/authApi";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { RegisterRequest } from "../../app/redux/api/types";
 import { CustomButton } from "../Button/buttons";
+import Notiflix from "notiflix";
 
 const RegisterForm = () => {
   const [form] = Form.useForm();
@@ -40,18 +40,18 @@ const RegisterForm = () => {
       }
     } catch (error) {
       if (error === 409) {
-        toast.error(
-          "Пользователь с таким адресом электронной почты уже существует"
+        Notiflix.Notify.failure(
+          "User with this email already exists"
         );
       } else {
-        toast.error("Произошла ошибка во время регистрации");
+        Notiflix.Notify.failure("Try again");
       }
     }
   };
 
   useEffect(() => {
     if (isRegisterSuccess && registerData) {
-      toast.success("User register successfully");
+      Notiflix.Notify.success("User register successfully");
       navigate("/auth/login");
     }
   }, [isRegisterSuccess, navigate, registerData]);

@@ -118,7 +118,11 @@ const baseQueryWithReauth: BaseQueryFn<
       Notiflix.Notify.failure("Email doesn't exist / Password is wrong")
      
     }
- 
+    if (result.error && result.error.status === 409) {
+      Notiflix.Notify.failure(
+        "User with this email already exists"
+      );
+    }
     return result;
   } catch (error) {
     console.error("Error occurred in baseQueryWithReauth:", error);

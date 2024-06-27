@@ -38,14 +38,14 @@ export const Header = () => {
   };
   return (
     <div className={css.header}>
-      <button className={css.logo} onClick={handleLogo}>
+      <a className={css.logo} onClick={handleLogo}>
         LIBRARY
-      </button>
+      </a>
       <div className={css.name}>{`${userName}`}</div>
       <div className="">
-        <button className={css.btnTrain} onClick={handleTraining}>
+        <a className={css.btnTrain} onClick={handleTraining}>
           Training
-        </button>
+        </a>
         <button className={css.buttonLogout} onClick={handleLogout}>
           Logout
         </button>
